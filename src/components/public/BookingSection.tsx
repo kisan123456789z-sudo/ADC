@@ -177,7 +177,7 @@ export const BookingSection: React.FC<BookingSectionProps> = ({ preSelectedServi
               {/* Action buttons */}
               <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
                 <a
-                  href={`https://wa.me/${settings.whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent(
+                  href={`https://wa.me/${(settings?.whatsappNumber || '919876543210').replace(/\D/g, '')}?text=${encodeURIComponent(
                     `Hello Dr. Anujay Clinic, I just booked an appointment for ${submittedBooking.service} on ${submittedBooking.date} at ${submittedBooking.timeSlot} under name ${submittedBooking.name}.`
                   )}`}
                   target="_blank"

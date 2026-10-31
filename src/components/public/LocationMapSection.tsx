@@ -42,7 +42,7 @@ export const LocationMapSection: React.FC<LocationMapSectionProps> = ({ onBookCl
   const googleEmbedUrl = 'https://maps.google.com/maps?q=21.2202723,81.3567154&z=17&hl=en&output=embed';
   const satelliteEmbedUrl = 'https://maps.google.com/maps?q=21.2202723,81.3567154&t=k&z=18&hl=en&output=embed';
 
-  const cleanWhatsApp = settings.whatsappNumber.replace(/\D/g, '');
+  const cleanWhatsApp = (settings?.whatsappNumber || '919876543210').replace(/\D/g, '');
   const whatsappUrl = `https://wa.me/${cleanWhatsApp}?text=${encodeURIComponent(
     `Hello ${clinicName}, I need help finding the clinic location near Utsav Bhavan, Supela.`
   )}`;

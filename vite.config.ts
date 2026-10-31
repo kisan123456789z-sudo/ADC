@@ -11,13 +11,20 @@ export default defineConfig(() => {
       react(), 
       tailwindcss(),
       {
-        name: 'copy-404',
+        name: 'github-pages-sync',
         closeBundle() {
           const distDir = path.resolve(import.meta.dirname, 'dist');
+          const docsDir = path.resolve(import.meta.dirname, 'docs');
           const indexPath = path.resolve(distDir, 'index.html');
           const notFoundPath = path.resolve(distDir, '404.html');
           if (fs.existsSync(indexPath)) {
             fs.copyFileSync(indexPath, notFoundPath);
+          }
+          // Also sync to docs/ directory for users choosing GitHub Pages "deploy from branch -> /docs"
+          try {
+            fs.cpSync(distDir, docsDir, { recursive: true });
+          } catch (e) {
+            console.warn('Sync to docs directory note:', e);
           }
         }
       }

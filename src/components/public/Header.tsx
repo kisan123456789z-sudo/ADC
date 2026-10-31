@@ -31,9 +31,9 @@ export const Header: React.FC<HeaderProps> = ({
   const { role, staffUser, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const cleanWhatsApp = settings.whatsappNumber.replace(/\D/g, '');
+  const cleanWhatsApp = (settings?.whatsappNumber || '919876543210').replace(/\D/g, '');
   const whatsappUrl = `https://wa.me/${cleanWhatsApp}?text=${encodeURIComponent(
-    `Hello ${settings.clinicName}, I would like to inquire about dental consultation and appointment.`
+    `Hello ${settings?.clinicName || 'Anujay Dental Clinic'}, I would like to inquire about dental consultation and appointment.`
   )}`;
 
   return (

@@ -1,10 +1,10 @@
 {
-  "id": "/",
+  "id": "./",
   "name": "Anujay Dental Clinic",
   "short_name": "Anujay Clinic",
   "description": "Official patient portal, appointment booking, and clinic management app for Anujay Dental Clinic",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#00205b",

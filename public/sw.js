@@ -1,9 +1,9 @@
 // Service Worker for Anujay Dental Clinic PWA & Android WebAPK
 const CACHE_NAME = 'anujay-dental-v1';
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+  './',
+  './index.html',
+  './manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
@@ -35,7 +35,7 @@ self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request).catch(() => {
-        return caches.match('/index.html') || caches.match('/');
+        return caches.match('./index.html') || caches.match('./') || caches.match(event.request);
       })
     );
     return;

@@ -25,6 +25,7 @@ import { AnnouncementStrip } from './components/public/AnnouncementStrip';
 import { OffersAndNoticesSection } from './components/public/OffersAndNoticesSection';
 import { NoticeDetailModal } from './components/common/NoticeDetailModal';
 import { AndroidInstallModal } from './components/common/AndroidInstallModal';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { 
   Eye, 
   LayoutDashboard, 
@@ -115,9 +116,9 @@ const MainApp: React.FC = () => {
   };
 
   // Quick WhatsApp URL
-  const cleanWhatsApp = settings.whatsappNumber.replace(/\D/g, '');
+  const cleanWhatsApp = (settings?.whatsappNumber || '919876543210').replace(/\D/g, '');
   const whatsappUrl = `https://wa.me/${cleanWhatsApp}?text=${encodeURIComponent(
-    `Hello ${settings.clinicName}, I would like to inquire about dental treatment.`
+    `Hello ${settings?.clinicName || 'Anujay Dental Clinic'}, I would like to inquire about dental treatment.`
   )}`;
 
   return (
@@ -382,10 +383,12 @@ const MainApp: React.FC = () => {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <ClinicProvider>
-        <MainApp />
-      </ClinicProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <ClinicProvider>
+          <MainApp />
+        </ClinicProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }

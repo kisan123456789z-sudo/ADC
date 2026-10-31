@@ -38,9 +38,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     }
   };
 
-  const cleanWhatsApp = settings.whatsappNumber.replace(/\D/g, '');
+  const cleanWhatsApp = (settings?.whatsappNumber || '919876543210').replace(/\D/g, '');
   const whatsappUrl = `https://wa.me/${cleanWhatsApp}?text=${encodeURIComponent(
-    `Hello ${settings.clinicName}, I want to book an appointment.`
+    `Hello ${settings?.clinicName || 'Anujay Dental Clinic'}, I want to book an appointment.`
   )}`;
 
   return (
@@ -136,7 +136,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
                 {/* 4. Direct Call Button */}
                 <a
-                  href={`tel:${settings.phone.replace(/\s+/g, '')}`}
+                  href={`tel:${(settings?.phone || '+919876543210').replace(/\s+/g, '')}`}
                   className="w-full sm:w-auto h-12 px-4.5 bg-white hover:bg-slate-50 text-slate-800 font-semibold text-sm sm:text-base rounded-full border border-slate-200/90 shadow-2xs flex items-center justify-center gap-2 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                 >
                   <Phone className="w-4 h-4 text-blue-600 shrink-0" />
