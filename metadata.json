@@ -1,0 +1,6 @@
+{
+  "name": "Anujay Dental Clinic",
+  "description": "Official portal and clinic management app for Anujay Dental Clinic - Online booking, staff and admin dashboard, prescriptions, and inventory.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

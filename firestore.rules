@@ -1,0 +1,228 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default Deny: Close all collections by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ========================================================================
+    // TRUSTED ROLE & IDENTITY VERIFICATION HELPERS
+    // ========================================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.phone_number == '+919876543210' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin') ||
+        (exists(/databases/$(database)/documents/admin/config) && 
+         get(/databases/$(database)/documents/admin/config).data.adminUid == request.auth.uid)
+      );
+    }
+
+    function isStaff() {
+      return isAuthenticated() && (
+        isAdmin() ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'staff' &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.active != false) ||
+        (exists(/databases/$(database)/documents/allowed_staff/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/allowed_staff/$(request.auth.uid)).data.active != false)
+      );
+    }
+
+    function isPatientOwner(patientId) {
+      return isAuthenticated() && (
+        request.auth.uid == patientId ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'patient' &&
+         (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.patientId == patientId ||
+          request.auth.uid == patientId))
+      );
+    }
+
+    // ========================================================================
+    // 1. USER PROFILES & RBAC ENFORCEMENT
+    // ========================================================================
+    match /users/{userId} {
+      // Users can read own profile; Staff/Admin can view profiles
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isStaff());
+      
+      // Self registration permitted only with patient role; cannot assign staff/admin
+      allow create: if isAuthenticated() && request.auth.uid == userId && (
+        !('role' in request.resource.data) || request.resource.data.role == 'patient'
+      );
+
+      // Ordinary users CANNOT escalate their own role; only Admin can modify role assignments
+      allow update: if isAdmin() || (
+        isAuthenticated() && request.auth.uid == userId && (
+          !('role' in request.resource.data) || request.resource.data.role == resource.data.role
+        )
+      );
+
+      allow delete: if isAdmin();
+    }
+
+    // ========================================================================
+    // 2. ADMINISTRATIVE & SECURITY CONFIGURATION
+    // ========================================================================
+    match /admin/{docId} {
+      allow read: if isStaff();
+      allow write: if isAdmin();
+    }
+
+    // ========================================================================
+    // 3. AUTHORIZED CLINIC STAFF ALLOWLIST
+    // ========================================================================
+    match /allowed_staff/{docId} {
+      allow read: if isStaff();
+      allow write: if isAdmin();
+    }
+
+    // ========================================================================
+    // 4. PUBLIC WEBSITE CONTENT (Clinic Info, Timings, Doctor Bio, FAQs)
+    // ========================================================================
+    match /content/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ========================================================================
+    // 5. PATIENT REVIEWS & TESTIMONIALS
+    // ========================================================================
+    match /reviews/{docId} {
+      allow read: if true;
+      allow create: if request.resource.data.name is string && 
+                       request.resource.data.reviewText is string &&
+                       request.resource.data.reviewText.size() <= 2000;
+      allow update, delete: if isStaff();
+    }
+
+    // ========================================================================
+    // 6. ONLINE BOOKINGS & APPOINTMENT REQUESTS
+    // ========================================================================
+    match /bookings/{docId} {
+      // Public visitors can submit bookings with validated contact info
+      allow create: if request.resource.data.patientName is string && 
+                       request.resource.data.phone is string &&
+                       request.resource.data.phone.size() >= 10;
+      // Only clinic staff and administrators can view, manage, or update bookings
+      allow read, update, delete: if isStaff();
+    }
+
+    // ========================================================================
+    // 7. CLINIC INVENTORY & SERVICE PRICING
+    // ========================================================================
+    match /inventory/{docId} {
+      allow read: if true;
+      allow write: if isStaff();
+    }
+
+    // ========================================================================
+    // 8. PATIENT DIRECTORY & DEMOGRAPHICS
+    // ========================================================================
+    match /patients/{patientId} {
+      // Staff can access all; Patient can access only their own record
+      allow read: if isStaff() || isPatientOwner(patientId);
+      allow create: if isStaff();
+      allow update: if isStaff() || (
+        isPatientOwner(patientId) && 
+        !('passwordHash' in request.resource.data) &&
+        !('failedAttempts' in request.resource.data)
+      );
+      allow delete: if isAdmin();
+    }
+
+    // ========================================================================
+    // 9. CLINICAL PRESCRIPTIONS
+    // ========================================================================
+    match /prescriptions/{prescId} {
+      allow read: if isStaff() || (
+        resource.data.patientId != null && isPatientOwner(resource.data.patientId)
+      );
+      allow create, update: if isStaff();
+      allow delete: if isAdmin();
+    }
+
+    // ========================================================================
+    // 10. CLINICAL DOCUMENTS, X-RAYS, & DIAGNOSTIC CHUNKS
+    // ========================================================================
+    match /documents/{docId} {
+      allow read: if isStaff() || (
+        resource.data.patientId != null && 
+        resource.data.isPublished == true && 
+        isPatientOwner(resource.data.patientId)
+      );
+      allow create, update: if isStaff();
+      allow delete: if isAdmin();
+    }
+
+    match /documents/{docId}/{allChildren=**} {
+      allow read, write: if isStaff();
+    }
+
+    match /document_chunks/{chunkId} {
+      allow read: if isStaff() || isAuthenticated();
+      allow write: if isStaff();
+    }
+
+    // ========================================================================
+    // 11. FINANCIAL RECORDS: INVOICES & PATIENT PAYMENTS
+    // ========================================================================
+    match /invoices/{invoiceId} {
+      allow read: if isStaff() || (
+        resource.data.patientId != null && isPatientOwner(resource.data.patientId)
+      );
+      allow create, update: if isStaff();
+      allow delete: if isAdmin();
+    }
+
+    match /patient_payments/{paymentId} {
+      allow read: if isStaff() || (
+        resource.data.patientId != null && isPatientOwner(resource.data.patientId)
+      );
+      allow create, update: if isStaff();
+      allow delete: if isAdmin();
+    }
+
+    // ========================================================================
+    // 12. OPERATIONAL FINANCIALS: CLINIC EXPENSES & DIRECT INCOME
+    // ========================================================================
+    match /expenses/{expenseId} {
+      allow read, write: if isStaff();
+      allow delete: if isAdmin();
+    }
+
+    match /income/{incomeId} {
+      allow read, write: if isStaff();
+      allow delete: if isAdmin();
+    }
+
+    // ========================================================================
+    // 13. AUDIT TRAILS & ACTIVITY LOGS (TAMPER-RESISTANT)
+    // ========================================================================
+    match /audit_logs/{logId} {
+      allow read: if isStaff();
+      // Write-once append-only: authenticated users or backend can record audit entries
+      allow create: if isAuthenticated() || isStaff();
+      // Ordinary users CANNOT modify or erase audit records; only Admin can maintain
+      allow update, delete: if isAdmin();
+    }
+
+    // ========================================================================
+    // 14. WHATSAPP CAMPAIGNS & BROADCAST LOGS
+    // ========================================================================
+    match /campaigns/{docId} {
+      allow read, write: if isStaff();
+    }
+
+    match /campaign_recipients/{docId} {
+      allow read, write: if isStaff();
+    }
+  }
+}

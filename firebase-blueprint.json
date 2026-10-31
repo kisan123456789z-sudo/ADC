@@ -1,0 +1,369 @@
+{
+  "entities": {
+    "AllowedStaff": {
+      "title": "AllowedStaff",
+      "description": "Authorized staff mobile numbers permitted to login",
+      "type": "object",
+      "properties": {
+        "phone": { "type": "string", "description": "Mobile number without spaces" },
+        "name": { "type": "string", "description": "Staff member full name" },
+        "role": { "type": "string", "description": "Designation or role" },
+        "addedAt": { "type": "string", "description": "Timestamp when added" }
+      },
+      "required": ["phone"]
+    },
+    "AdminConfig": {
+      "title": "AdminConfig",
+      "description": "Configuration settings for administrator access and clinic security",
+      "type": "object",
+      "properties": {
+        "password": { "type": "string", "description": "Admin login password" },
+        "adminPhone": { "type": "string", "description": "Admin mobile number for OTP" },
+        "otpRequired": { "type": "boolean", "description": "Whether OTP is required for admin" },
+        "autoLogoutMinutes": { "type": "number", "description": "Auto logout idle duration" },
+        "updatedAt": { "type": "string", "description": "Last update timestamp" }
+      },
+      "required": ["password"]
+    },
+    "InventoryItem": {
+      "title": "InventoryItem",
+      "description": "Medicine or dental supply item tracked in clinic stock",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Medicine or consumable item name" },
+        "quantity": { "type": "number", "description": "Quantity currently available" },
+        "unit": { "type": "string", "description": "Packaging unit (strips, vials, boxes, pcs)" },
+        "category": { "type": "string", "description": "Category e.g. Antibiotics, Painkillers, Dental Materials" },
+        "minThreshold": { "type": "number", "description": "Minimum alert threshold" },
+        "updatedAt": { "type": "string", "description": "Last updated date" }
+      },
+      "required": ["name", "quantity"]
+    },
+    "Patient": {
+      "title": "Patient",
+      "description": "Registered clinic patient profile and history",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Patient full name" },
+        "phone": { "type": "string", "description": "Patient mobile phone" },
+        "age": { "type": "number", "description": "Patient age" },
+        "gender": { "type": "string", "description": "Gender" },
+        "address": { "type": "string", "description": "Address or locality" },
+        "notes": { "type": "string", "description": "General clinical notes" },
+        "totalVisits": { "type": "number", "description": "Total visits count" },
+        "lastVisit": { "type": "string", "description": "Date of last visit" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" }
+      },
+      "required": ["name", "phone"]
+    },
+    "Prescription": {
+      "title": "Prescription",
+      "description": "Clinical prescription and treatment result documentation",
+      "type": "object",
+      "properties": {
+        "patientId": { "type": "string", "description": "Patient reference ID" },
+        "patientName": { "type": "string", "description": "Patient full name" },
+        "patientPhone": { "type": "string", "description": "Contact phone" },
+        "age": { "type": "number", "description": "Patient age" },
+        "gender": { "type": "string", "description": "Gender" },
+        "serviceTaken": { "type": "string", "description": "Service or dental procedure performed" },
+        "resultUpdate": { "type": "string", "description": "Clinical outcome and procedure notes" },
+        "prescriptionText": { "type": "string", "description": "Prescription instructions and dosage notes" },
+        "medicinesList": { "type": "string", "description": "Structured JSON or line items of medicines" },
+        "doctorName": { "type": "string", "description": "Attending dental surgeon" },
+        "visitNotes": { "type": "string", "description": "Short history of visit notes or clinical remarks" },
+        "previousVisitNotes": { "type": "string", "description": "Associated previous visit history" },
+        "date": { "type": "string", "description": "Prescription date" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" },
+        "isPublishedToPortal": { "type": "boolean", "description": "Whether this prescription is visible in patient portal" },
+        "createdByRole": { "type": "string", "description": "Role of the creator: staff or admin" },
+        "approvalStatus": { "type": "string", "description": "Approval status: approved, pending_approval, draft" }
+      },
+      "required": ["patientName", "serviceTaken", "prescriptionText"]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "Patient appointment booking record",
+      "type": "object",
+      "properties": {
+        "patientName": { "type": "string", "description": "Name of booking patient" },
+        "phone": { "type": "string", "description": "Contact phone number" },
+        "service": { "type": "string", "description": "Selected dental treatment service" },
+        "date": { "type": "string", "description": "Appointment date" },
+        "timeSlot": { "type": "string", "description": "Selected time slot" },
+        "problemDescription": { "type": "string", "description": "Reason for visit / symptoms" },
+        "status": { "type": "string", "description": "Booking status (New, Confirmed, Completed, Cancelled)" },
+        "paymentStatus": { "type": "string", "description": "Payment status (Unpaid, Paid - Cash)" },
+        "fee": { "type": "number", "description": "Treatment fee in rupees" },
+        "seenByStaff": { "type": "boolean", "description": "Whether staff has acknowledged the new booking" },
+        "createdAt": { "type": "string", "description": "Booking timestamp" }
+      },
+      "required": ["patientName", "phone", "service", "date"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Patient feedback and rating for the clinic",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Reviewer patient name" },
+        "rating": { "type": "number", "description": "Rating score between 1 and 5" },
+        "reviewText": { "type": "string", "description": "Testimonial commentary" },
+        "date": { "type": "string", "description": "Submission date" },
+        "isApproved": { "type": "boolean", "description": "Public visibility flag" }
+      },
+      "required": ["name", "reviewText"]
+    },
+    "ContentSection": {
+      "title": "ContentSection",
+      "description": "Dynamic editable clinic website copy",
+      "type": "object",
+      "properties": {
+        "sectionKey": { "type": "string", "description": "Key identifier e.g. about, faq, highlights" },
+        "data": { "type": "string", "description": "JSON string or text content" },
+        "updatedAt": { "type": "string", "description": "Last update timestamp" }
+      },
+      "required": ["sectionKey"]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "Operational and clinic inventory expense",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Expense title or vendor" },
+        "amount": { "type": "number", "description": "Expense amount" },
+        "category": { "type": "string", "description": "Category e.g. Supplies, Rent, Utilities, Equipment" },
+        "date": { "type": "string", "description": "Date incurred" },
+        "notes": { "type": "string", "description": "Additional notes" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" }
+      },
+      "required": ["name", "amount", "date"]
+    },
+    "Income": {
+      "title": "Income",
+      "description": "Direct clinic treatment revenue, walk-in patient fees, and medicine sales",
+      "type": "object",
+      "properties": {
+        "source": { "type": "string", "description": "Patient name or revenue source" },
+        "service": { "type": "string", "description": "Treatment or item description" },
+        "amount": { "type": "number", "description": "Income amount in rupees" },
+        "date": { "type": "string", "description": "Date received" },
+        "paymentMode": { "type": "string", "description": "Cash, UPI, Card" },
+        "notes": { "type": "string", "description": "Notes or invoice reference" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" }
+      },
+      "required": ["source", "amount", "date"]
+    },
+    "PatientDocument": {
+      "description": "Patient medical reports, prescriptions, X-rays, lab reports, and billing files",
+      "type": "object",
+      "properties": {
+        "patientId": { "type": "string", "description": "Linked internal Patient ID" },
+        "patientName": { "type": "string", "description": "Patient name" },
+        "patientPhone": { "type": "string", "description": "Patient phone" },
+        "category": { "type": "string", "description": "Dental Prescription, X-Ray / Dental Imaging, Laboratory Report, Medical or Dental Report, Invoice / Bill, Treatment Plan, Other Documents" },
+        "title": { "type": "string", "description": "Document title" },
+        "description": { "type": "string", "description": "Optional clinical summary or details" },
+        "documentDate": { "type": "string", "description": "Document date YYYY-MM-DD" },
+        "fileUrl": { "type": "string", "description": "Data URL or storage link" },
+        "fileName": { "type": "string", "description": "Original file name" },
+        "fileType": { "type": "string", "description": "MIME type (pdf, png, jpg)" },
+        "fileSize": { "type": "number", "description": "Size in bytes" },
+        "uploaderName": { "type": "string", "description": "Staff or admin who uploaded" },
+        "uploaderRole": { "type": "string", "description": "Role of uploader (staff or admin)" },
+        "isPublished": { "type": "boolean", "description": "Whether document is visible in patient portal" },
+        "createdAt": { "type": "string", "description": "Upload timestamp" },
+        "updatedAt": { "type": "string", "description": "Last edit timestamp" }
+      },
+      "required": ["patientId", "category", "title", "documentDate", "fileUrl"]
+    },
+    "Invoice": {
+      "description": "Patient clinical treatment invoice and balance ledger",
+      "type": "object",
+      "properties": {
+        "invoiceNumber": { "type": "string", "description": "Unique clinic invoice number" },
+        "patientId": { "type": "string", "description": "Linked Patient ID" },
+        "patientName": { "type": "string", "description": "Patient full name" },
+        "patientPhone": { "type": "string", "description": "Patient contact number" },
+        "invoiceDate": { "type": "string", "description": "Date of invoice" },
+        "treatmentDescription": { "type": "string", "description": "Treatment or procedures performed" },
+        "totalCharges": { "type": "number", "description": "Gross charges before discount" },
+        "discount": { "type": "number", "description": "Discount in rupees" },
+        "finalAmount": { "type": "number", "description": "Total charges minus discount" },
+        "amountPaid": { "type": "number", "description": "Cumulative verified payments" },
+        "outstandingBalance": { "type": "number", "description": "Final amount minus amount paid" },
+        "paymentStatus": { "type": "string", "description": "Unpaid, Partially Paid, Paid" },
+        "notes": { "type": "string", "description": "Clinical or billing notes" },
+        "createdBy": { "type": "string", "description": "Creator name" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" }
+      },
+      "required": ["invoiceNumber", "patientId", "invoiceDate", "treatmentDescription", "totalCharges", "finalAmount", "paymentStatus"]
+    },
+    "PatientPayment": {
+      "description": "Patient payment transaction recorded against an invoice or treatment",
+      "type": "object",
+      "properties": {
+        "invoiceId": { "type": "string", "description": "Associated Invoice ID" },
+        "invoiceNumber": { "type": "string", "description": "Associated Invoice human readable number" },
+        "patientId": { "type": "string", "description": "Linked Patient ID" },
+        "patientName": { "type": "string", "description": "Patient name" },
+        "amount": { "type": "number", "description": "Payment amount in rupees" },
+        "paymentDate": { "type": "string", "description": "Payment receipt date" },
+        "paymentMethod": { "type": "string", "description": "Cash, UPI, Card, Bank Transfer" },
+        "referenceNumber": { "type": "string", "description": "Receipt, UPI Ref, or transaction reference" },
+        "recordedBy": { "type": "string", "description": "Staff or admin member" },
+        "recordedByRole": { "type": "string", "description": "staff or admin" },
+        "notes": { "type": "string", "description": "Payment remarks" },
+        "isRefund": { "type": "boolean", "description": "Whether this transaction is an authorized refund or adjustment" },
+        "createdAt": { "type": "string", "description": "Receipt timestamp" }
+      },
+      "required": ["invoiceId", "patientId", "amount", "paymentDate", "paymentMethod"]
+    },
+    "AuditLog": {
+      "description": "Audit trail for sensitive document and billing actions",
+      "type": "object",
+      "properties": {
+        "patientId": { "type": "string", "description": "Patient ID" },
+        "action": { "type": "string", "description": "Action type" },
+        "details": { "type": "string", "description": "Summary of change" },
+        "performedBy": { "type": "string", "description": "Name of user" },
+        "performedByRole": { "type": "string", "description": "Role of user" },
+        "timestamp": { "type": "string", "description": "Action timestamp" }
+      },
+      "required": ["patientId", "action", "details", "performedBy", "timestamp"]
+    },
+    "WhatsAppCampaign": {
+      "description": "WhatsApp broadcast campaigns and message templates",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "type": { "type": "string" },
+        "category": { "type": "string" },
+        "content": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["title", "type", "content", "status"]
+    },
+    "CampaignRecipient": {
+      "description": "Recipient log and delivery status for WhatsApp campaigns",
+      "type": "object",
+      "properties": {
+        "campaignId": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["campaignId", "phoneNumber", "status"]
+    },
+    "ClinicNotice": {
+      "title": "ClinicNotice",
+      "description": "Clinic notices, promotional offers, timing changes, and patient bulletins",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "priority": { "type": "string" },
+        "content": { "type": "string" },
+        "summary": { "type": "string" },
+        "mainHighlight": { "type": "string" },
+        "applicableServices": { "type": "string" },
+        "ctaText": { "type": "string" },
+        "termsAndConditions": { "type": "string" },
+        "isFeatured": { "type": "boolean" },
+        "mediaType": { "type": "string" },
+        "mediaUrl": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "publishDate": { "type": "string" },
+        "expiryDate": { "type": "string" },
+        "isPinned": { "type": "boolean" },
+        "status": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorRole": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["title", "category", "content", "status", "publishDate"]
+    }
+  },
+  "firestore": {
+    "/allowed_staff/{docId}": {
+      "schema": { "$ref": "#/entities/AllowedStaff" },
+      "description": "Authorized staff phone numbers"
+    },
+    "/admin/{docId}": {
+      "schema": { "$ref": "#/entities/AdminConfig" },
+      "description": "Admin configuration and password"
+    },
+    "/inventory/{docId}": {
+      "schema": { "$ref": "#/entities/InventoryItem" },
+      "description": "Clinic medicine and consumable inventory"
+    },
+    "/patients/{docId}": {
+      "schema": { "$ref": "#/entities/Patient" },
+      "description": "Patient records and demographic profiles"
+    },
+    "/prescriptions/{docId}": {
+      "schema": { "$ref": "#/entities/Prescription" },
+      "description": "Doctor prescriptions and clinical outcomes"
+    },
+    "/bookings/{docId}": {
+      "schema": { "$ref": "#/entities/Booking" },
+      "description": "Patient appointment bookings"
+    },
+    "/reviews/{docId}": {
+      "schema": { "$ref": "#/entities/Review" },
+      "description": "Public patient reviews and testimonials"
+    },
+    "/content/{docId}": {
+      "schema": { "$ref": "#/entities/ContentSection" },
+      "description": "Editable website content for about, faqs, highlights"
+    },
+    "/expenses/{docId}": {
+      "schema": { "$ref": "#/entities/Expense" },
+      "description": "Clinic operational expenses"
+    },
+    "/income/{docId}": {
+      "schema": { "$ref": "#/entities/Income" },
+      "description": "Direct clinic income and revenue records"
+    },
+    "/documents/{docId}": {
+      "schema": { "$ref": "#/entities/PatientDocument" },
+      "description": "Patient medical reports, prescriptions, X-rays and imaging"
+    },
+    "/invoices/{docId}": {
+      "schema": { "$ref": "#/entities/Invoice" },
+      "description": "Patient treatment invoices and ledger"
+    },
+    "/patient_payments/{docId}": {
+      "schema": { "$ref": "#/entities/PatientPayment" },
+      "description": "Recorded patient payments and receipts"
+    },
+    "/audit_logs/{docId}": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "Audit trail entries for patient medical & financial changes"
+    },
+    "/users/{userId}": {
+      "schema": {
+        "title": "UserProfile",
+        "type": "object",
+        "properties": {
+          "uid": { "type": "string" },
+          "phoneNumber": { "type": "string" },
+          "role": { "type": "string" },
+          "active": { "type": "boolean" },
+          "name": { "type": "string" }
+        },
+        "required": ["uid", "phoneNumber", "role"]
+      },
+      "description": "Authenticated user profiles and roles linked to Firebase Auth UID"
+    },
+    "/campaigns/{docId}": {
+      "schema": { "$ref": "#/entities/WhatsAppCampaign" },
+      "description": "WhatsApp broadcast campaigns"
+    },
+    "/campaign_recipients/{docId}": {
+      "schema": { "$ref": "#/entities/CampaignRecipient" },
+      "description": "WhatsApp broadcast recipient delivery logs"
+    }
+  }
+}
