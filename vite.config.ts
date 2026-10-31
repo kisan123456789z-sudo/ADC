@@ -1,3 +1,4 @@
+import fs from 'fs';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
@@ -5,10 +6,25 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss()],
+    base: './',
+    plugins: [
+      react(), 
+      tailwindcss(),
+      {
+        name: 'copy-404',
+        closeBundle() {
+          const distDir = path.resolve(import.meta.dirname, 'dist');
+          const indexPath = path.resolve(distDir, 'index.html');
+          const notFoundPath = path.resolve(distDir, '404.html');
+          if (fs.existsSync(indexPath)) {
+            fs.copyFileSync(indexPath, notFoundPath);
+          }
+        }
+      }
+    ],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.'),
+        '@': path.resolve(import.meta.dirname, '.'),
       },
     },
     server: {

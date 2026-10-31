@@ -1,6 +1,7 @@
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import { AdminConfig, AllowedStaff, Patient } from '../types/clinic';
+import { apiUrl } from '../utils/apiConfig';
 
 export const INITIAL_SECURITY_QUESTION = "What was the first gift you remember receiving?";
 export const MIN_PASSWORD_LENGTH = 12;
@@ -85,7 +86,7 @@ export async function authenticatePatient(phone: string, password: string): Prom
   }
 
   try {
-    const res = await fetch('/api/auth/patient/login', {
+    const res = await fetch(apiUrl('/api/auth/patient/login'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone: clean10, password })
@@ -132,7 +133,7 @@ export interface PatientRegistrationResult {
 
 export async function registerPatientAccount(params: PatientRegistrationParams): Promise<PatientRegistrationResult> {
   try {
-    const res = await fetch('/api/auth/patient/register', {
+    const res = await fetch(apiUrl('/api/auth/patient/register'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(params)
@@ -183,7 +184,7 @@ export interface StaffRegistrationResult {
 
 export async function registerStaffAccount(params: StaffRegistrationParams): Promise<StaffRegistrationResult> {
   try {
-    const res = await fetch('/api/auth/staff/register', {
+    const res = await fetch(apiUrl('/api/auth/staff/register'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(params)
@@ -225,7 +226,7 @@ export async function authenticateStaff(phone: string, password: string): Promis
   }
 
   try {
-    const res = await fetch('/api/auth/staff/login', {
+    const res = await fetch(apiUrl('/api/auth/staff/login'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone: clean10, password })
@@ -276,7 +277,7 @@ export async function verifyAdminPhone(phone: string): Promise<AdminPhoneCheckRe
   }
 
   try {
-    const res = await fetch('/api/auth/admin/verify-phone', {
+    const res = await fetch(apiUrl('/api/auth/admin/verify-phone'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone: clean10 })
@@ -304,7 +305,7 @@ export async function authenticateAdminInitialPassword(
   initialPwd: string
 ): Promise<{ success: boolean; error?: string; isLocked?: boolean }> {
   try {
-    const res = await fetch('/api/auth/admin/verify-step1', {
+    const res = await fetch(apiUrl('/api/auth/admin/verify-step1'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone, initialPassword: initialPwd })
@@ -331,7 +332,7 @@ export async function authenticateAdminFinalPassword(
   finalPwd: string
 ): Promise<{ success: boolean; error?: string; isLocked?: boolean }> {
   try {
-    const res = await fetch('/api/auth/admin/verify-step2', {
+    const res = await fetch(apiUrl('/api/auth/admin/verify-step2'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone, finalPassword: finalPwd })
@@ -393,7 +394,7 @@ export async function getAccountRecoveryInfo(
   phone: string
 ): Promise<RecoveryQuestionInfo> {
   try {
-    const res = await fetch('/api/auth/recovery/info', {
+    const res = await fetch(apiUrl('/api/auth/recovery/info'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ role, phone })
@@ -427,7 +428,7 @@ export async function verifyRecoveryAnswer(
   answer: string
 ): Promise<{ verified: boolean; error?: string }> {
   try {
-    const res = await fetch('/api/auth/recovery/verify-answer', {
+    const res = await fetch(apiUrl('/api/auth/recovery/verify-answer'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ role, phone, answer })
@@ -453,7 +454,7 @@ export async function resetPasswordWithRecovery(
   newFinalPassword?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const res = await fetch('/api/auth/recovery/reset-password', {
+    const res = await fetch(apiUrl('/api/auth/recovery/reset-password'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -530,7 +531,7 @@ export async function setIndividualRecoveryAnswer(
   newAnswer?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const res = await fetch('/api/auth/set-recovery-answer', {
+    const res = await fetch(apiUrl('/api/auth/set-recovery-answer'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -559,7 +560,7 @@ export async function updateAdminPasswordsDirect(
   newFinal: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const res = await fetch('/api/auth/admin/change-passwords', {
+    const res = await fetch(apiUrl('/api/auth/admin/change-passwords'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -592,7 +593,7 @@ export async function updateAdminPhoneNumber(
   currentFinal: string
 ): Promise<{ success: boolean; error?: string; newPhone?: string; message?: string }> {
   try {
-    const res = await fetch('/api/auth/admin/update-phone', {
+    const res = await fetch(apiUrl('/api/auth/admin/update-phone'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -23,6 +23,7 @@ import {
   setStoredAuthToken,
   clearStoredAuthToken 
 } from '../services/securityAuthService';
+import { apiUrl } from '../utils/apiConfig';
 
 export type UserRole = 'public' | 'staff' | 'admin';
 
@@ -75,7 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       try {
-        const res = await fetch('/api/auth/session', {
+        const res = await fetch(apiUrl('/api/auth/session'), {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -266,7 +267,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginAdminWithPassword = async (password: string): Promise<boolean> => {
     const adminPhone = adminConfig?.adminPhone || '9876543210';
     try {
-      const res = await fetch('/api/auth/admin/verify-step1', {
+      const res = await fetch(apiUrl('/api/auth/admin/verify-step1'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: adminPhone, initialPassword: password })
@@ -334,7 +335,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setFirebaseUser(null);
     clearStoredAuthToken();
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
+      await fetch(apiUrl('/api/auth/logout'), { method: 'POST' });
     } catch {}
     await signOutFirebaseUser();
   };

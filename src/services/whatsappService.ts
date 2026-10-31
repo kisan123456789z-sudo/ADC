@@ -23,6 +23,7 @@ import {
   CampaignCategory,
   CampaignType
 } from '../types/clinic';
+import { apiUrl } from '../utils/apiConfig';
 
 /**
  * Normalizes phone numbers into E.164 international format.
@@ -301,7 +302,7 @@ If you haven't had a dental checkup in the past 6 months, reply to this message 
  */
 export async function getWhatsAppApiConfig(): Promise<WhatsAppConfigStatus> {
   try {
-    const res = await fetch('/api/whatsapp/config');
+    const res = await fetch(apiUrl('/api/whatsapp/config'));
     if (res.ok) {
       const data = await res.json();
       return data;
@@ -660,7 +661,7 @@ export async function executeCampaignBroadcast(
     // Call server endpoint if Cloud API is configured
     if (config.isConfigured) {
       try {
-        const resp = await fetch('/api/whatsapp/broadcast', {
+        const resp = await fetch(apiUrl('/api/whatsapp/broadcast'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
