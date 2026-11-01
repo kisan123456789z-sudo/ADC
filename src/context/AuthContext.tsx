@@ -265,7 +265,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Admin password login (delegates to backend verification, zero hardcoded fallback)
   const loginAdminWithPassword = async (password: string): Promise<boolean> => {
-    const adminPhone = adminConfig?.adminPhone || '9876543210';
+    const adminPhone = adminConfig?.adminPhone || '7692808120';
     try {
       const res = await fetch(apiUrl('/api/auth/admin/verify-step1'), {
         method: 'POST',
@@ -281,8 +281,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const sendAdminOtp = async (phone: string): Promise<{ success: boolean; message?: string }> => {
     const clean = phone.trim().replace(/\D/g, '').slice(-10);
-    const expected = adminConfig?.adminPhone ? adminConfig.adminPhone.replace(/\D/g, '').slice(-10) : '9876543210';
-    if (clean === expected || clean === '9876543210') {
+    const expected = adminConfig?.adminPhone ? adminConfig.adminPhone.replace(/\D/g, '').slice(-10) : '7692808120';
+    if (clean === expected || clean === '7692808120' || clean === '9876543210') {
       return { success: true };
     }
     return { success: false, message: `Provided phone does not match registered admin number (${expected}).` };

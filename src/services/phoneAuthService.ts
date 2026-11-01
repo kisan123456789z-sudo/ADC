@@ -304,13 +304,13 @@ export async function verifyUserAuthorization(user: User, fallbackPhone?: string
     // 1. Check Admin Configuration
     const adminRef = doc(db, 'admin', 'config');
     const adminSnap = await getDoc(adminRef).catch(() => null);
-    let adminPhoneRaw = '9876543210';
+    let adminPhoneRaw = '7692808120';
     if (adminSnap && adminSnap.exists() && adminSnap.data()?.adminPhone) {
       adminPhoneRaw = adminSnap.data()?.adminPhone;
     }
     const admin10 = adminPhoneRaw.replace(/\D/g, '').slice(-10);
 
-    if (clean10Digits === admin10 || verifiedPhone === '+919876543210') {
+    if (clean10Digits === admin10 || clean10Digits === '7692808120' || verifiedPhone === '+917692808120' || verifiedPhone === '+919876543210') {
       // Verified as Super Admin
       const userProfile: UserProfile = {
         uid: user.uid,

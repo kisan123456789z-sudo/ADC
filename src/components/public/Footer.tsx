@@ -26,7 +26,7 @@ export const Footer: React.FC<FooterProps> = ({
 }) => {
   const { settings } = useClinic();
 
-  const cleanWhatsApp = (settings?.whatsappNumber || '919876543210').replace(/\D/g, '');
+  const cleanWhatsApp = (settings?.whatsappNumber || '917692808120').replace(/\D/g, '');
   const whatsappUrl = `https://wa.me/${cleanWhatsApp}?text=${encodeURIComponent(
     `Hello ${settings?.clinicName || 'Anujay Dental Clinic'}, I would like to inquire about dental services.`
   )}`;
@@ -101,8 +101,8 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-sky-400 shrink-0" />
-                <a href={`tel:${(settings?.phone || '+919876543210').replace(/\s+/g, '')}`} className="hover:text-white font-semibold">
-                  {settings?.phone || '+91 98765 43210'}
+                <a href={`tel:${(settings?.phone || '+917692808120').replace(/\s+/g, '')}`} className="hover:text-white font-semibold">
+                  {settings?.phone || '+91 76928 08120'}
                 </a>
               </div>
               <div className="flex items-center gap-2.5">

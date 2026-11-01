@@ -21,8 +21,8 @@ export const DEFAULT_SETTINGS: ClinicSettings = {
   clinicName: "AnuJay Dental Clinic",
   tagline: "Excellence in Modern Painless Dentistry",
   logoUrl: "", // Will use beautiful SVG tooth crest if empty
-  phone: "+91 98765 43210",
-  whatsappNumber: "919876543210",
+  phone: "+91 76928 08120",
+  whatsappNumber: "917692808120",
   address: "Shop no. 3, infront of Utsav Bhavan, Supela, Sunder Nagar, Bhilai, Chhattisgarh 490026",
   googleMapUrl: "https://maps.app.goo.gl/z2c6moS2vPQ87f1V8",
   googleMapEmbedQuery: "AnuJay Dental Clinic, Shop no. 3, infront of Utsav Bhavan, Supela, Sunder Nagar, Bhilai, Chhattisgarh 490026",
@@ -306,7 +306,7 @@ export async function seedInitialClinicData() {
     const adminSnap = await getDoc(adminRef);
     if (!adminSnap.exists()) {
       await setDoc(adminRef, {
-        adminPhone: "9876543210",
+        adminPhone: "7692808120",
         securityQuestion: "What was the first gift you remember receiving?",
         securityQuestionVersion: 1,
         autoLogoutMinutes: 30,
@@ -327,7 +327,7 @@ export async function seedInitialClinicData() {
     const staffSnap = await getDocs(staffCol);
     if (staffSnap.empty) {
       const defaultStaff = [
-        { phone: "9876543210", name: "Dr. Anujay Sharma", role: "Chief Dental Surgeon", addedAt: new Date().toISOString() },
+        { phone: "7692808120", name: "Dr. Anujay Sharma", role: "Chief Dental Surgeon", addedAt: new Date().toISOString() },
         { phone: "9898989898", name: "Priya Verma", role: "Senior Dental Hygienist", addedAt: new Date().toISOString() },
         { phone: "9123456789", name: "Rohan Patel", role: "Clinic Front Desk Manager", addedAt: new Date().toISOString() }
       ];

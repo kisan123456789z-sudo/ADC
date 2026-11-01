@@ -116,7 +116,7 @@ const MainApp: React.FC = () => {
   };
 
   // Quick WhatsApp URL
-  const cleanWhatsApp = (settings?.whatsappNumber || '919876543210').replace(/\D/g, '');
+  const cleanWhatsApp = (settings?.whatsappNumber || '917692808120').replace(/\D/g, '');
   const whatsappUrl = `https://wa.me/${cleanWhatsApp}?text=${encodeURIComponent(
     `Hello ${settings?.clinicName || 'Anujay Dental Clinic'}, I would like to inquire about dental treatment.`
   )}`;

@@ -41,7 +41,7 @@ export const DoctorAboutSection: React.FC<DoctorAboutSectionProps> = ({ onBookCl
   const whatsappMessage = encodeURIComponent(
     `Hello ${about.doctorName || 'Dr. Anujay Sharma'}, I would like to consult with you regarding a dental checkup at AnuJay Dental Clinic.`
   );
-  const whatsappUrl = `https://wa.me/${(settings.phone || '919876543210').replace(/[^0-9]/g, '')}?text=${whatsappMessage}`;
+  const whatsappUrl = `https://wa.me/${(settings?.phone || '917692808120').replace(/[^0-9]/g, '')}?text=${whatsappMessage}`;
 
   return (
     <section id="about" className="py-20 bg-gradient-to-b from-white via-blue-50/30 to-slate-50 border-t border-slate-200/60 relative overflow-hidden">

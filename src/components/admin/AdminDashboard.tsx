@@ -3379,7 +3379,7 @@ export const AdminDashboard: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <Phone className="w-4 h-4 text-purple-700" />
                     <span className="text-base font-extrabold text-slate-900 tracking-wide">
-                      +91 {extractClean10(adminConfig?.adminPhone || '9876543210')}
+                      +91 {extractClean10(adminConfig?.adminPhone || '7692808120')}
                     </span>
                   </div>
                   <p className="text-[11px] text-slate-500">
@@ -3391,7 +3391,7 @@ export const AdminDashboard: React.FC = () => {
                     type="button"
                     onClick={() => {
                       setIsAdminPhoneEditing(true);
-                      setAdminNewPhoneInput(extractClean10(adminConfig?.adminPhone || '9876543210'));
+                      setAdminNewPhoneInput(extractClean10(adminConfig?.adminPhone || '7692808120'));
                       setAdminPhoneMsg('');
                       setAdminPhoneErr('');
                       setAdminPhoneReauthInitial('');
@@ -3475,7 +3475,7 @@ export const AdminDashboard: React.FC = () => {
                         type="tel"
                         required
                         maxLength={10}
-                        placeholder="e.g. 9876543210"
+                        placeholder="e.g. 7692808120"
                         value={adminNewPhoneInput}
                         onChange={(e) => setAdminNewPhoneInput(e.target.value.replace(/\D/g, '').slice(0, 10))}
                         className="w-full pl-12 pr-3.5 py-2.5 bg-white border border-slate-300 rounded-xl font-bold text-slate-900 tracking-wider focus:outline-none focus:ring-2 focus:ring-purple-600"
@@ -3620,7 +3620,7 @@ export const AdminDashboard: React.FC = () => {
 
                 setSecQuestionLoading(true);
                 try {
-                  const adminPhone = adminConfig?.adminPhone || '9876543210';
+                  const adminPhone = adminConfig?.adminPhone || '7692808120';
                   const res = await updateAdminSecurityQuestion(
                     adminPhone,
                     reauthInitialPwd,
@@ -3772,7 +3772,7 @@ export const AdminDashboard: React.FC = () => {
 
                 setAdminPwdLoading(true);
                 try {
-                  const adminPhone = adminConfig?.adminPhone || '9876543210';
+                  const adminPhone = adminConfig?.adminPhone || '7692808120';
                   // Verify current credentials first
                   const c1 = await authenticateAdminInitialPassword(adminPhone, adminCurrentInitial);
                   // Secure direct update with server-side re-authentication

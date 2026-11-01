@@ -1050,7 +1050,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                       type="button"
                       onClick={() => {
                         setViewMode('forgot_password');
-                        setRecoveryPhone(phoneNumber || '9876543210');
+                        setRecoveryPhone(phoneNumber || '7692808120');
                         setRecoveryStep('phone');
                         setErrorMessage('');
                       }}
@@ -1493,13 +1493,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({
             </div>
           )}
 
-          {/* Footer test & support note */}
-          <div className="pt-3 border-t border-slate-100 text-center text-[11px] text-slate-400 space-y-1">
-            <p>Protected by 15-Minute Lockout Protection & Secure Credential Hashing.</p>
-            <p className="text-[10px]">
-              Clinic Desk: <strong className="text-slate-600">{adminConfig?.adminPhone || '+91 98765 43210'}</strong>
-            </p>
-          </div>
         </div>
       </div>
     </div>

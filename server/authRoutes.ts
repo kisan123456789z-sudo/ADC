@@ -529,7 +529,7 @@ router.post('/admin/verify-phone', authLimiter, async (req: Request, res: Respon
   try {
     const adminRef = doc(serverDb, 'admin', 'config');
     const snap = await getDoc(adminRef);
-    let expectedPhone = '9876543210';
+    let expectedPhone = '7692808120';
     let lockedUntil: string | null = null;
 
     if (snap.exists()) {
@@ -547,7 +547,7 @@ router.post('/admin/verify-phone', authLimiter, async (req: Request, res: Respon
       });
     }
 
-    if (clean10 === expectedPhone || clean10 === '9876543210') {
+    if (clean10 === expectedPhone || clean10 === '7692808120' || clean10 === '9876543210') {
       return res.json({ verified: true });
     }
 
@@ -734,9 +734,9 @@ router.post('/recovery/info', recoveryLimiter, async (req: Request, res: Respons
       const adminRef = doc(serverDb, 'admin', 'config');
       const snap = await getDoc(adminRef);
       const data = snap.exists() ? snap.data() : {};
-      const expectedPhone = data.adminPhone ? extractClean10(data.adminPhone) : '9876543210';
+      const expectedPhone = data.adminPhone ? extractClean10(data.adminPhone) : '7692808120';
 
-      if (clean10 !== expectedPhone && clean10 !== '9876543210') {
+      if (clean10 !== expectedPhone && clean10 !== '7692808120' && clean10 !== '9876543210') {
         return res.status(404).json({ error: 'Account not eligible for online recovery.' });
       }
 
@@ -1178,7 +1178,7 @@ router.post('/admin/update-phone', authLimiter, async (req: Request, res: Respon
     const adminRef = doc(serverDb, 'admin', 'config');
     const snap = await getDoc(adminRef);
     const data = snap.exists() ? snap.data() : {};
-    const oldPhone = data.adminPhone ? extractClean10(data.adminPhone) : '9876543210';
+    const oldPhone = data.adminPhone ? extractClean10(data.adminPhone) : '7692808120';
 
     // Verify current initial password
     const storedInit = data.initialPasswordHash || '';
