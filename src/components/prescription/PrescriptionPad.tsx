@@ -132,7 +132,13 @@ export const PrescriptionPad: React.FC<PrescriptionPadProps> = ({
     showFeedback('Restored default prescription template.');
   };
 
-  const isCustomScanActive = !!localStorage.getItem('anujay_custom_prescription_template');
+  const isCustomScanActive = (() => {
+    try {
+      return !!localStorage.getItem('anujay_custom_prescription_template');
+    } catch {
+      return false;
+    }
+  })();
 
   return (
     <div className="space-y-4">

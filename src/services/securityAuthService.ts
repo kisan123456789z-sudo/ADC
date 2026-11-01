@@ -17,6 +17,8 @@ export const MIN_PASSWORD_LENGTH = 12;
 export const MAX_CONSECUTIVE_ATTEMPTS = 5;
 export const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
 
+import { safeStorage } from '../utils/safeStorage';
+
 export const AUTH_TOKEN_KEY = 'anujay_clinic_jwt_token';
 export const AUTH_SESSION_KEY = 'anujay_clinic_auth_session';
 
@@ -30,25 +32,25 @@ export interface LocalAuthSession {
 }
 
 export function getStoredAuthToken(): string | null {
-  return localStorage.getItem(AUTH_TOKEN_KEY);
+  return safeStorage.getItem(AUTH_TOKEN_KEY);
 }
 
 export function setStoredAuthToken(token: string): void {
-  localStorage.setItem(AUTH_TOKEN_KEY, token);
+  safeStorage.setItem(AUTH_TOKEN_KEY, token);
 }
 
 export function clearStoredAuthToken(): void {
-  localStorage.removeItem(AUTH_TOKEN_KEY);
-  localStorage.removeItem(AUTH_SESSION_KEY);
+  safeStorage.removeItem(AUTH_TOKEN_KEY);
+  safeStorage.removeItem(AUTH_SESSION_KEY);
 }
 
 export function getLocalAuthSession(): LocalAuthSession | null {
   try {
-    const raw = localStorage.getItem(AUTH_SESSION_KEY);
+    const raw = safeStorage.getItem(AUTH_SESSION_KEY);
     if (!raw) return null;
     const session = JSON.parse(raw) as LocalAuthSession;
     if (session.expiresAt && Date.now() > session.expiresAt) {
-      localStorage.removeItem(AUTH_SESSION_KEY);
+      safeStorage.removeItem(AUTH_SESSION_KEY);
       return null;
     }
     return session;
@@ -62,7 +64,7 @@ export function setLocalAuthSession(session: Omit<LocalAuthSession, 'expiresAt'>
     ...session,
     expiresAt: Date.now() + hours * 60 * 60 * 1000
   };
-  localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(fullSession));
+  safeStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(fullSession));
 }
 
 /**

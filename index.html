@@ -2,29 +2,112 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // GitHub Pages SPA & Mobile URL trailing-slash normalization
+      // Prevents relative assets (./assets/...) from failing when visiting https://<user>.github.io/<repo> without trailing slash
+      (function() {
+        var path = window.location.pathname;
+        if (path && !path.endsWith('/') && !path.split('/').pop().includes('.')) {
+          window.location.replace(window.location.origin + path + '/' + window.location.search + window.location.hash);
+        }
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
-    <title>Anujay Dental Clinic</title>
-    <meta name="description" content="Official portal and clinic management app for Anujay Dental Clinic - Online booking, staff and admin dashboard, prescriptions, and inventory." />
-    <meta property="og:title" content="Anujay Dental Clinic" />
-    <meta property="og:description" content="Official portal and clinic management app for Anujay Dental Clinic - Online booking, staff and admin dashboard, prescriptions, and inventory." />
+    <title>AnuJay Dental Clinic</title>
+    <meta name="description" content="Official portal and clinic management app for AnuJay Dental Clinic - Online booking, staff and admin dashboard, prescriptions, and inventory." />
+    <meta property="og:title" content="AnuJay Dental Clinic" />
+    <meta property="og:description" content="Official portal and clinic management app for AnuJay Dental Clinic - Online booking, staff and admin dashboard, prescriptions, and inventory." />
     <meta property="og:type" content="website" />
     <meta name="theme-color" content="#00205b" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Anujay Clinic" />
+    <meta name="apple-mobile-web-app-title" content="AnuJay Clinic" />
     <link rel="manifest" href="./manifest.json" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   </head>
   <body class="bg-slate-50 text-slate-800 antialiased font-sans selection:bg-blue-600 selection:text-white">
-    <div id="root"></div>
+    <!-- Immediate Branded Preloader inside #root: React replaces this automatically upon mounting -->
+    <div id="root">
+      <div id="app-preloader" style="min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; padding: 24px; text-align: center; box-sizing: border-box;">
+        <div style="width: 72px; height: 72px; border-radius: 20px; background: linear-gradient(135deg, #00205b 0%, #003882 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0, 32, 91, 0.2); margin-bottom: 20px;">
+          <svg style="width: 38px; height: 38px; color: #ffffff; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;" viewBox="0 0 24 24">
+            <path d="M12 2C7.5 2 4 5.5 4 10c0 4.5 2 9 4.5 12 1-1.5 2.5-4 3.5-5 1 1 2.5 3.5 3.5 5 2.5-3 4.5-7.5 4.5-12 0-4.5-3.5-8-8-8z"/>
+          </svg>
+        </div>
+        <h1 style="margin: 0 0 6px; font-size: 22px; font-weight: 800; color: #00205b; letter-spacing: -0.02em;">
+          AnuJay Dental Clinic
+        </h1>
+        <p style="margin: 0 0 24px; font-size: 13px; color: #64748b; font-weight: 500;">
+          Loading clinic portal &amp; patient records...
+        </p>
+        
+        <!-- Animated loader bar -->
+        <div style="width: 140px; height: 4px; background: #e2e8f0; border-radius: 999px; overflow: hidden; position: relative;">
+          <div style="width: 50%; height: 100%; background: #00205b; border-radius: 999px; animation: clinicPulse 1.2s infinite ease-in-out;"></div>
+        </div>
+
+        <!-- Diagnostic / Recovery Fallback (visible if mobile device gets stuck due to stale cache) -->
+        <div id="preloader-fallback" style="display: none; margin-top: 28px; max-width: 300px; animation: fadeIn 0.4s ease-out;">
+          <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px; line-height: 1.4;">
+            Loading is taking longer than usual. Tap below to clear cached files and reload.
+          </p>
+          <button 
+            type="button" 
+            onclick="forceRefreshPortal()" 
+            style="background: #00205b; color: #ffffff; border: none; padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(0,32,91,0.2);">
+            Clear Cache &amp; Refresh
+          </button>
+        </div>
+      </div>
+      <style>
+        @keyframes clinicPulse {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(250%); }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(6px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      </style>
+      <script>
+        // If app hasn't mounted in 5 seconds, reveal friendly refresh action
+        window.__preloaderTimer = setTimeout(function() {
+          var el = document.getElementById('preloader-fallback');
+          if (el) el.style.display = 'block';
+        }, 5000);
+
+        function forceRefreshPortal() {
+          try {
+            if ('caches' in window) {
+              caches.keys().then(function(keys) {
+                keys.forEach(function(k) { caches.delete(k); });
+              });
+            }
+            if ('serviceWorker' in navigator) {
+              navigator.serviceWorker.getRegistrations().then(function(regs) {
+                regs.forEach(function(r) { r.unregister(); });
+              });
+            }
+          } catch(e) {}
+          window.location.reload(true);
+        }
+      </script>
+    </div>
+
+    <!-- Application Script Entrypoint -->
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Service Worker Registration & Auto-Update -->
     <script>
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js').catch(() => {});
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('./sw.js').then(function(registration) {
+            // Check for service worker updates
+            registration.update().catch(function() {});
+          }).catch(function() {});
         });
       }
     </script>
