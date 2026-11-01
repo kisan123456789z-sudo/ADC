@@ -21,7 +21,9 @@ import {
   authenticateStaff,
   getStoredAuthToken,
   setStoredAuthToken,
-  clearStoredAuthToken 
+  clearStoredAuthToken,
+  getLocalAuthSession,
+  setLocalAuthSession
 } from '../services/securityAuthService';
 import { apiUrl } from '../utils/apiConfig';
 
@@ -68,10 +70,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     fetchAdminConfig();
 
     const verifyServerSession = async () => {
+      // Check local session first for GitHub Pages resilience
+      const local = getLocalAuthSession();
+      if (local) {
+        if (local.role === 'admin') {
+          setRole('admin');
+          setStaffUser(null);
+        } else if (local.role === 'staff' && local.staff) {
+          setRole('staff');
+          setStaffUser(local.staff);
+        }
+      }
+
       const token = getStoredAuthToken();
       if (!token) {
-        setRole('public');
-        setStaffUser(null);
+        if (!local) {
+          setRole('public');
+          setStaffUser(null);
+        }
         return;
       }
 
@@ -82,7 +98,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
         });
 
-        if (res.ok) {
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
           const data = await res.json();
           if (data.authenticated && data.user) {
             if (data.user.role === 'admin') {
@@ -90,7 +107,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               setStaffUser(null);
             } else if (data.user.role === 'staff') {
               setRole('staff');
-              // Hydrate staff profile if available
               if (data.user.staffId) {
                 const staffSnap = await getDoc(doc(db, 'allowed_staff', data.user.staffId)).catch(() => null);
                 if (staffSnap && staffSnap.exists()) {
@@ -102,12 +118,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             clearStoredAuthToken();
             setRole('public');
           }
-        } else {
-          clearStoredAuthToken();
-          setRole('public');
         }
       } catch (err) {
-        console.warn('Session verification error:', err);
+        // Backend unreachable (e.g. GitHub Pages), keep local authenticated session intact
+        console.warn('Session server verification bypassed (static mode active):', err);
       }
     };
 
@@ -257,6 +271,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginAdminSuccess = () => {
     setRole('admin');
     setStaffUser(null);
+    setLocalAuthSession({ role: 'admin', phone: adminConfig?.adminPhone || '7692808120' }, 8);
   };
 
   const refreshAdminConfig = async () => {
