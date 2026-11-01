@@ -50,11 +50,19 @@ import { PrescriptionPad } from '../prescription/PrescriptionPad';
 interface PatientDashboardProps {
   patient: Patient;
   onLogout: () => void;
+  initialTab?: 'reports' | 'prescriptions' | 'xrays' | 'invoices' | 'payments' | 'updates';
+  activeTabOverride?: 'reports' | 'prescriptions' | 'xrays' | 'invoices' | 'payments' | 'updates';
+  onTabChange?: (tab: 'reports' | 'prescriptions' | 'xrays' | 'invoices' | 'payments' | 'updates') => void;
+  openWhatsAppPrefSignal?: number;
 }
 
 export const PatientDashboard: React.FC<PatientDashboardProps> = ({
   patient,
-  onLogout
+  onLogout,
+  initialTab = 'reports',
+  activeTabOverride,
+  onTabChange,
+  openWhatsAppPrefSignal
 }) => {
   const {
     documents,
@@ -71,7 +79,24 @@ export const PatientDashboard: React.FC<PatientDashboardProps> = ({
   const [prefSaveNotice, setPrefSaveNotice] = useState('');
 
   // Active section tab
-  const [activeTab, setActiveTab] = useState<'reports' | 'prescriptions' | 'xrays' | 'invoices' | 'payments' | 'updates'>('reports');
+  const [activeTab, setActiveTabState] = useState<'reports' | 'prescriptions' | 'xrays' | 'invoices' | 'payments' | 'updates'>(activeTabOverride || initialTab);
+
+  const setActiveTab = (tab: 'reports' | 'prescriptions' | 'xrays' | 'invoices' | 'payments' | 'updates') => {
+    setActiveTabState(tab);
+    if (onTabChange) onTabChange(tab);
+  };
+
+  useEffect(() => {
+    if (activeTabOverride && activeTabOverride !== activeTab) {
+      setActiveTabState(activeTabOverride);
+    }
+  }, [activeTabOverride]);
+
+  useEffect(() => {
+    if (openWhatsAppPrefSignal && openWhatsAppPrefSignal > 0) {
+      setIsWhatsAppPrefModalOpen(true);
+    }
+  }, [openWhatsAppPrefSignal]);
 
   // Preview modals
   const [previewDoc, setPreviewDoc] = useState<PatientDocument | null>(null);
@@ -255,7 +280,7 @@ export const PatientDashboard: React.FC<PatientDashboardProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col">
+    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-0">
       {/* Patient Portal Header */}
       <header className="bg-gradient-to-r from-[#00205b] to-[#003882] text-white shadow-md sticky top-0 z-30 pt-[env(safe-area-inset-top,0px)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-3.5 flex flex-wrap items-center justify-between gap-3">

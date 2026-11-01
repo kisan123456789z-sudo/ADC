@@ -25,6 +25,7 @@ import { AnnouncementStrip } from './components/public/AnnouncementStrip';
 import { OffersAndNoticesSection } from './components/public/OffersAndNoticesSection';
 import { NoticeDetailModal } from './components/common/NoticeDetailModal';
 import { AndroidInstallModal } from './components/common/AndroidInstallModal';
+import { MobileBottomNav } from './components/common/MobileBottomNav';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { 
   Eye, 
@@ -53,6 +54,10 @@ const MainApp: React.FC = () => {
   const [preSelectedService, setPreSelectedService] = useState('');
   const [selectedAnnouncementNotice, setSelectedAnnouncementNotice] = useState<ClinicNotice | null>(null);
 
+  // Patient portal tab sync state for mobile bottom nav
+  const [activePatientTab, setActivePatientTab] = useState<'reports' | 'prescriptions' | 'xrays' | 'invoices' | 'payments' | 'updates'>('reports');
+  const [openWhatsAppPrefSignal, setOpenWhatsAppPrefSignal] = useState(0);
+
   // Android APK / PWA install modal state
   const [androidModalOpen, setAndroidModalOpen] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -74,14 +79,14 @@ const MainApp: React.FC = () => {
   const [prescriptionToEdit, setPrescriptionToEdit] = useState<Partial<Prescription> | null>(null);
 
   // Sync role changes to activeView
+  const prevRoleRef = React.useRef(role);
   React.useEffect(() => {
-    if (role === 'admin' && activeView !== 'admin' && activeView !== 'public') {
-      setActiveView('admin');
-    } else if (role === 'staff' && activeView !== 'staff' && activeView !== 'public') {
-      setActiveView('staff');
+    if (prevRoleRef.current === 'public' && (role === 'admin' || role === 'staff')) {
+      setActiveView(role);
     } else if (role === 'public' && (activeView === 'admin' || activeView === 'staff')) {
       setActiveView('public');
     }
+    prevRoleRef.current = role;
   }, [role, activeView]);
 
   // Open Staff or Admin Login Modal
@@ -208,6 +213,9 @@ const MainApp: React.FC = () => {
       ) : activeView === 'patient' && currentPatient ? (
         <PatientDashboard 
           patient={currentPatient} 
+          activeTabOverride={activePatientTab}
+          onTabChange={(tab) => setActivePatientTab(tab)}
+          openWhatsAppPrefSignal={openWhatsAppPrefSignal}
           onLogout={() => {
             setCurrentPatient(null);
             setActivePatientId(null);
@@ -216,7 +224,7 @@ const MainApp: React.FC = () => {
         />
       ) : (
         /* ================= PUBLIC WEBSITE ================= */
-        <main className="relative w-full max-w-full overflow-x-hidden">
+        <main className="relative w-full max-w-full overflow-x-hidden pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-0">
           <Header 
             onOpenMap={() => setMapModalOpen(true)}
             onOpenLogin={(tab) => handleOpenLogin(tab || 'staff')}
@@ -286,15 +294,15 @@ const MainApp: React.FC = () => {
           />
 
           {/* Floating WhatsApp Quick Action Button on public landing page */}
-          <div className="fixed bottom-[max(1.5rem,calc(env(safe-area-inset-bottom,0px)+1rem))] right-[max(1.5rem,calc(env(safe-area-inset-right,0px)+1rem))] z-40 flex flex-col gap-3">
+          <div className="fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom,0px))] md:bottom-[max(1.5rem,calc(env(safe-area-inset-bottom,0px)+1rem))] right-[max(1rem,calc(env(safe-area-inset-right,0px)+1rem))] z-30 flex flex-col gap-3">
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Chat on WhatsApp"
-              className="w-14 h-14 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all group relative cursor-pointer"
+              className="w-13 h-13 sm:w-14 sm:h-14 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all group relative cursor-pointer"
             >
-              <MessageCircle className="w-7 h-7 fill-current" />
+              <MessageCircle className="w-6 h-6 sm:w-7 sm:h-7 fill-current" />
               <span className="absolute right-16 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-slate-900 text-white text-xs font-bold rounded-xl whitespace-nowrap shadow-xl opacity-0 group-hover:opacity-100 transition pointer-events-none">
                 WhatsApp Us
               </span>
@@ -303,12 +311,93 @@ const MainApp: React.FC = () => {
         </main>
       )}
 
+      {/* ================= SHARED MOBILE BOTTOM NAVIGATION ================= */}
+      {/* 
+        Strict Rules:
+        - Only render in Public Website and Patient Portal
+        - NEVER render in Admin Dashboard or Staff Dashboard
+        - NEVER render when Staff/Admin Login modal is active
+        - Mobile screens only (md:hidden built into component)
+      */}
+      {(activeView === 'public' || activeView === 'patient') && !loginModalOpen && (
+        <MobileBottomNav
+          currentView={activeView === 'patient' ? 'patient' : 'public'}
+          currentPatient={currentPatient}
+          settings={settings}
+          onNavigateHome={() => {
+            if (activeView === 'patient') {
+              setActivePatientTab('reports');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+              const homeEl = document.getElementById('home');
+              if (homeEl) homeEl.scrollIntoView({ behavior: 'smooth' });
+              else window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+          onNavigateServices={() => {
+            if (activeView === 'patient') {
+              setActiveView('public');
+              setTimeout(() => {
+                const servEl = document.getElementById('services');
+                if (servEl) servEl.scrollIntoView({ behavior: 'smooth' });
+              }, 80);
+            } else {
+              const servEl = document.getElementById('services');
+              if (servEl) servEl.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}
+          onNavigateBooking={() => {
+            if (activeView === 'patient') {
+              setActiveView('public');
+              setTimeout(() => {
+                handleBookClick();
+              }, 80);
+            } else {
+              handleBookClick();
+            }
+          }}
+          onNavigateReports={() => {
+            if (activeView === 'patient') {
+              setActivePatientTab('reports');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (currentPatient) {
+              setActiveView('patient');
+              setActivePatientTab('reports');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+              handleOpenPatientLogin();
+            }
+          }}
+          onNavigateProfile={() => {
+            if (!currentPatient) {
+              handleOpenPatientLogin();
+            }
+          }}
+          onPatientLogout={() => {
+            setCurrentPatient(null);
+            setActivePatientId(null);
+            setActiveView('public');
+          }}
+          onOpenWhatsAppPrefs={() => {
+            if (activeView !== 'patient') {
+              setActiveView('patient');
+            }
+            setOpenWhatsAppPrefSignal((s) => s + 1);
+          }}
+          activePatientTab={activePatientTab}
+        />
+      )}
+
       {/* ================= MODALS ================= */}
       {loginModalOpen && (
         <LoginModal 
           isOpen={loginModalOpen}
           initialTab={loginModalTab}
           onClose={() => setLoginModalOpen(false)}
+          onLoginSuccess={(newRole) => {
+            setActiveView(newRole);
+            setLoginModalOpen(false);
+          }}
         />
       )}
 

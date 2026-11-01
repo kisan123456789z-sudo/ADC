@@ -40,12 +40,14 @@ interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialTab?: 'staff' | 'admin';
+  onLoginSuccess?: (role: 'staff' | 'admin') => void;
 }
 
 export const LoginModal: React.FC<LoginModalProps> = ({
   isOpen,
   onClose,
-  initialTab = 'staff'
+  initialTab = 'staff',
+  onLoginSuccess
 }) => {
   const { 
     loginStaffWithPassword, 
@@ -175,7 +177,11 @@ export const LoginModal: React.FC<LoginModalProps> = ({
     try {
       const res = await loginStaffWithPassword(phoneNumber, staffPassword);
       if (res.success) {
-        onClose();
+        if (onLoginSuccess) {
+          onLoginSuccess('staff');
+        } else {
+          onClose();
+        }
       } else {
         setErrorMessage(res.error || 'Invalid staff mobile number or password.');
       }
@@ -338,7 +344,11 @@ export const LoginModal: React.FC<LoginModalProps> = ({
 
       // Complete Success -> Grant Admin Role and open dashboard
       loginAdminSuccess();
-      onClose();
+      if (onLoginSuccess) {
+        onLoginSuccess('admin');
+      } else {
+        onClose();
+      }
     } catch (err) {
       setErrorMessage('Authentication failed. Please try again.');
     } finally {
