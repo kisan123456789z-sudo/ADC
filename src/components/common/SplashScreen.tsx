@@ -135,7 +135,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
                 } else if (logoSrc !== ajLogoAsset) {
                   setLogoSrc(ajLogoAsset);
                 } else {
-                  setLogoSrc('/assets/aj-logo.png');
+                  setLogoSrc('./assets/aj-logo.png');
                 }
               }}
             />

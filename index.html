@@ -27,61 +27,103 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="preload" as="image" href="/assets/aj-logo.png" />
+    <link rel="preload" as="image" href="./assets/aj-logo.png" />
+    <link rel="preload" as="image" href="./aj-logo.png" />
   </head>
   <body class="bg-slate-50 text-slate-800 antialiased font-sans selection:bg-blue-600 selection:text-white">
-    <!-- Immediate Branded Splash Screen Animation inside #root: Replaced seamlessly when React mounts -->
+    <!-- Immediate Branded Splash Screen Animation inside #root: Exactly identical to React SplashScreen for 100% visual parity -->
     <div id="root">
-      <div id="app-preloader" style="position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 38%, #002d72 0%, #001f56 50%, #001233 100%); font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; padding: 24px; text-align: center; box-sizing: border-box; overflow: hidden; z-index: 99999;">
-        <!-- Glowing ambient backdrop -->
-        <div style="position: absolute; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(circle, rgba(56,189,248,0.2) 0%, rgba(2,132,199,0.08) 60%, transparent 80%); pointer-events: none; animation: splashPulse 3s infinite ease-in-out;"></div>
+      <div id="app-preloader" style="position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 36%, #002d72 0%, #001a45 50%, #000f28 100%); font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; padding: 24px; text-align: center; box-sizing: border-box; overflow: hidden; z-index: 99999; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); user-select: none;">
+        <!-- Ambient background glow rings -->
+        <div style="position: absolute; width: 384px; height: 384px; border-radius: 50%; filter: blur(48px); opacity: 0.25; background: radial-gradient(circle, #38bdf8 0%, #0284c7 60%, transparent 80%); pointer-events: none; animation: splashPulse 3.5s infinite ease-in-out;"></div>
         
-        <!-- Ripple Ring -->
-        <div style="position: absolute; width: 220px; height: 220px; border-radius: 50%; border: 1px solid rgba(56,189,248,0.18); pointer-events: none; animation: splashRipple 3s infinite cubic-bezier(0, 0.2, 0.8, 1);"></div>
+        <div style="position: absolute; width: 288px; height: 288px; border-radius: 50%; border: 1px solid rgba(56, 189, 248, 0.1); pointer-events: none; animation: splashPing 4.5s cubic-bezier(0, 0, 0.2, 1) infinite;"></div>
 
-        <!-- Logo Icon Box -->
-        <div style="position: relative; width: 104px; height: 104px; border-radius: 20px; background: rgba(0, 23, 61, 0.9); border: 1px solid rgba(56, 189, 248, 0.35); box-shadow: 0 16px 40px rgba(0, 18, 51, 0.8), 0 0 26px rgba(56, 189, 248, 0.25); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; overflow: hidden; padding: 10px; box-sizing: border-box;">
-          <!-- Shimmer line sweep -->
-          <div style="position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%); animation: splashShimmer 2.6s infinite ease-in-out; pointer-events: none;"></div>
+        <!-- Main Brand Container -->
+        <div style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; padding: 0 16px; max-width: 384px; width: 100%; text-align: center; box-sizing: border-box;">
+          
+          <!-- Animated AJ Dental Tooth Logo Container -->
+          <div style="position: relative; margin-bottom: 20px; animation: logoEntrance 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;">
+            <!-- Outer halo glow -->
+            <div style="position: absolute; inset: -12px; border-radius: 24px; background: linear-gradient(90deg, rgba(56,189,248,0.2) 0%, rgba(59,130,246,0.15) 50%, rgba(45,212,191,0.2) 100%); filter: blur(16px); opacity: 0.8; animation: splashPulse 3s infinite ease-in-out;"></div>
 
-          <!-- Official AJ Logo Image -->
-          <img 
-            src="/assets/aj-logo.png" 
-            onerror="this.onerror=null; this.src='/aj-logo.png'; this.onerror=function(){this.src='./assets/aj-logo.png';};" 
-            alt="AnuJay Dental AJ Logo" 
-            loading="eager"
-            decoding="sync"
-            style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(56,189,248,0.45));" 
-          />
+            <!-- Logo Frame: Exactly 112px x 112px, centered, maintaining original proportions -->
+            <div style="position: relative; width: 112px; height: 112px; border-radius: 16px; background: rgba(0, 23, 61, 0.9); border: 1px solid rgba(125, 211, 252, 0.3); box-shadow: 0 16px 40px rgba(0, 18, 51, 0.8), 0 0 30px rgba(56, 189, 248, 0.25); display: flex; align-items: center; justify-content: center; padding: 10px; overflow: hidden; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-sizing: border-box;">
+              <!-- Shimmer line sweep across logo -->
+              <div style="position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%); transform: skewX(-20deg); animation: shimmerSweep 2.6s infinite ease-in-out; pointer-events: none;"></div>
 
-          <!-- Sparkling glint -->
-          <svg style="position: absolute; top: 8px; right: 8px; width: 12px; height: 12px; fill: #38bdf8; animation: splashStar 3s infinite ease-in-out;" viewBox="0 0 24 24">
-            <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/>
-          </svg>
-        </div>
+              <!-- Official AJ Tooth Logo Image with GitHub Pages Relative Path Fallback -->
+              <img 
+                id="preloader-logo-img"
+                src="./assets/aj-logo.png" 
+                onerror="this.onerror=null; this.src='./aj-logo.png';" 
+                alt="AnuJay Dental AJ Logo" 
+                loading="eager"
+                decoding="sync"
+                style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 16px rgba(56,189,248,0.45)); user-select: none; pointer-events: none;" 
+              />
 
-        <!-- Typography -->
-        <h1 style="margin: 0 0 6px; font-size: 24px; font-weight: 800; color: #ffffff; letter-spacing: -0.02em; text-shadow: 0 2px 10px rgba(0,0,0,0.4);">
-          AnuJay <span style="color: #38bdf8; font-weight: 600;">Dental</span> Clinic
-        </h1>
-        <p style="margin: 0 0 28px; font-size: 11px; color: rgba(224, 242, 254, 0.95); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;">
-          UNIQUE BY NATURE, UNBEATABLE IN CARE.
-        </p>
-        
-        <!-- High-Visibility Mobile-Optimized Filling Loading Bar -->
-        <div style="width: 240px; max-width: 82vw; height: 10px; background: rgba(0, 19, 51, 0.95); border: 1.5px solid rgba(56, 189, 248, 0.45); border-radius: 999px; overflow: hidden; position: relative; box-shadow: inset 0 1px 4px rgba(0,0,0,0.7), 0 0 16px rgba(56,189,248,0.3); padding: 2px; box-sizing: border-box;">
-          <div style="height: 100%; border-radius: 999px; background: linear-gradient(90deg, #0284c7 0%, #38bdf8 50%, #67e8f9 85%, #ffffff 100%); box-shadow: 0 0 12px rgba(56,189,248,0.9); animation: preloaderFill 2.2s cubic-bezier(0.1, 0.8, 0.2, 1) forwards; position: relative;">
-            <div style="position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.7) 50%, transparent 100%); animation: preloaderShimmer 1.5s infinite linear; border-radius: 999px;"></div>
-            <div style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 6px; height: 6px; border-radius: 50%; background: #ffffff; box-shadow: 0 0 8px #38bdf8, 0 0 3px #ffffff;"></div>
+              <!-- Sparkle Glint Star -->
+              <svg style="position: absolute; top: 8px; right: 8px; width: 14px; height: 14px; fill: #7dd3fc; animation: spinSlow 4s linear infinite;" viewBox="0 0 24 24">
+                <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Clinic Name -->
+          <h1 style="margin: 0 0 8px; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; gap: 6px; animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;">
+            <span>AnuJay</span>
+            <span style="color: #7dd3fc; font-weight: 600;">Dental</span>
+            <span style="color: #ffffff;">Clinic</span>
+          </h1>
+
+          <!-- Required Tagline - Exact text: UNIQUE BY NATURE, UNBEATABLE IN CARE. -->
+          <div style="padding: 0 8px; margin-bottom: 24px; animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;">
+            <p style="margin: 0; font-size: 11.5px; font-weight: 700; letter-spacing: 0.14em; color: rgba(186, 230, 253, 0.95); text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,0.3); line-height: 1.5;">
+              UNIQUE BY NATURE, UNBEATABLE IN CARE.
+            </p>
+          </div>
+          
+          <!-- Highly Visible Mobile-Optimized Loading Line Container -->
+          <div style="width: 270px; max-width: 85vw; margin-bottom: 12px; animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;">
+            <!-- Status Label & Percentage Indicator -->
+            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; font-weight: 500; color: rgba(186, 230, 253, 0.8); margin-bottom: 8px; padding: 0 4px;">
+              <span id="preloader-status" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Initializing clinic systems...</span>
+              <span id="preloader-pct" style="font-weight: 700; color: #7dd3fc; margin-left: 8px; font-variant-numeric: tabular-nums;">8%</span>
+            </div>
+
+            <!-- Progress Bar Track -->
+            <div style="position: relative; width: 100%; height: 11px; background: rgba(0, 19, 51, 0.95); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 9999px; overflow: hidden; padding: 2px; box-shadow: 0 0 15px rgba(56,189,248,0.3), inset 0 1px 3px rgba(0,0,0,0.7); box-sizing: border-box;">
+              <!-- Smooth Filling Line -->
+              <div id="preloader-fill" style="position: relative; width: 8%; height: 100%; border-radius: 9999px; background: linear-gradient(90deg, #0284c7 0%, #38bdf8 50%, #22d3ee 85%, #ffffff 100%); box-shadow: 0 0 12px rgba(56,189,248,0.85); transition: width 0.15s ease-out;">
+                <!-- Inner shimmer wave -->
+                <div style="position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.7) 50%, transparent 100%); animation: fillShimmer 1.6s infinite linear; border-radius: 9999px;"></div>
+                <!-- Glowing lead tip -->
+                <div style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 7px; height: 7px; border-radius: 50%; background: #ffffff; box-shadow: 0 0 8px #38bdf8, 0 0 3px #ffffff;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Loading Pulse Dots -->
+          <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11.5px; color: rgba(186, 230, 253, 0.6); font-weight: 500; letter-spacing: 0.02em; min-height: 18px;">
+            <span>Syncing portal data</span>
+            <span style="display: inline-flex; gap: 4px; align-items: center;">
+              <span style="width: 4px; height: 4px; border-radius: 50%; background: #7dd3fc; animation: bounceDot 1.4s infinite ease-in-out; animation-delay: 0ms;"></span>
+              <span style="width: 4px; height: 4px; border-radius: 50%; background: #7dd3fc; animation: bounceDot 1.4s infinite ease-in-out; animation-delay: 150ms;"></span>
+              <span style="width: 4px; height: 4px; border-radius: 50%; background: #7dd3fc; animation: bounceDot 1.4s infinite ease-in-out; animation-delay: 300ms;"></span>
+            </span>
           </div>
         </div>
 
-        <p style="margin: 12px 0 0; font-size: 12px; color: rgba(224, 242, 254, 0.75); font-weight: 600; letter-spacing: 0.02em;">
-          Initializing clinic systems...
-        </p>
+        <!-- Bottom Trust Badges -->
+        <div style="position: absolute; bottom: 28px; text-align: center; padding: 0 16px;">
+          <p style="margin: 0; font-size: 10.5px; color: rgba(186, 230, 253, 0.5); font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase;">
+            Safe &bull; Hygienic &bull; Certified Dental Specialist
+          </p>
+        </div>
 
-        <!-- Diagnostic / Recovery Fallback (visible if mobile device gets stuck due to stale cache) -->
-        <div id="preloader-fallback" style="display: none; margin-top: 26px; max-width: 290px; animation: fadeIn 0.4s ease-out;">
+        <!-- Diagnostic / Recovery Fallback (visible only if browser execution hangs for 6+ seconds) -->
+        <div id="preloader-fallback" style="display: none; margin-top: 26px; max-width: 290px; animation: fadeInUp 0.4s ease-out; z-index: 20;">
           <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px; line-height: 1.4;">
             Loading is taking longer than usual. Tap below to refresh.
           </p>
@@ -94,47 +136,74 @@
         </div>
       </div>
       <style>
-        @keyframes preloaderFill {
-          0% { width: 8%; }
-          30% { width: 48%; }
-          70% { width: 85%; }
-          100% { width: 98%; }
+        @keyframes splashPulse {
+          0%, 100% { transform: scale(1); opacity: 0.25; }
+          50% { transform: scale(1.08); opacity: 0.35; }
         }
-        @keyframes preloaderShimmer {
+        @keyframes splashPing {
+          0% { transform: scale(0.9); opacity: 0.4; }
+          75%, 100% { transform: scale(1.35); opacity: 0; }
+        }
+        @keyframes logoEntrance {
+          0% { opacity: 0; transform: scale(0.75) translateY(12px); }
+          60% { transform: scale(1.04) translateY(-2px); }
+          100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes fadeInUp {
+          0% { opacity: 0; transform: translateY(10px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes shimmerSweep {
+          0% { transform: translateX(-150%) skewX(-20deg); }
+          50%, 100% { transform: translateX(200%) skewX(-20deg); }
+        }
+        @keyframes fillShimmer {
           0% { transform: translateX(-100%); }
           100% { transform: translateX(200%); }
         }
-        @keyframes splashPulse {
-          0%, 100% { transform: scale(1); opacity: 0.2; }
-          50% { transform: scale(1.15); opacity: 0.35; }
+        @keyframes spinSlow {
+          0% { transform: rotate(0deg) scale(0.9); opacity: 0.7; }
+          50% { transform: rotate(180deg) scale(1.15); opacity: 1; }
+          100% { transform: rotate(360deg) scale(0.9); opacity: 0.7; }
         }
-        @keyframes splashRipple {
-          0% { transform: scale(0.85); opacity: 0.6; }
-          100% { transform: scale(1.4); opacity: 0; }
-        }
-        @keyframes splashShimmer {
-          0% { transform: translateX(-120%) skewX(-20deg); }
-          45%, 100% { transform: translateX(180%) skewX(-20deg); }
-        }
-        @keyframes splashToothDraw {
-          0% { stroke-dashoffset: 80; opacity: 0; }
-          100% { stroke-dashoffset: 0; opacity: 1; }
-        }
-        @keyframes splashStar {
-          0%, 100% { transform: rotate(0deg) scale(0.9); opacity: 0.7; }
-          50% { transform: rotate(180deg) scale(1.2); opacity: 1; }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(6px); }
-          to { opacity: 1; transform: translateY(0); }
+        @keyframes bounceDot {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-4px); }
         }
       </style>
       <script>
-        // If app hasn't mounted in 5 seconds, reveal friendly refresh action
+        (function() {
+          var fill = document.getElementById('preloader-fill');
+          var pctEl = document.getElementById('preloader-pct');
+          var statusEl = document.getElementById('preloader-status');
+          var startTime = Date.now();
+          var duration = 2400;
+
+          var interval = setInterval(function() {
+            var elapsed = Date.now() - startTime;
+            var pct = Math.min(94, Math.round((elapsed / duration) * 94));
+            if (fill) fill.style.width = Math.max(8, pct) + '%';
+            if (pctEl) pctEl.textContent = pct + '%';
+            if (statusEl) {
+              if (pct > 72) {
+                statusEl.textContent = 'Preparing clinic experience...';
+              } else if (pct > 35) {
+                statusEl.textContent = 'Loading services & dental records...';
+              } else {
+                statusEl.textContent = 'Initializing clinic systems...';
+              }
+            }
+            if (elapsed >= duration) {
+              clearInterval(interval);
+            }
+          }, 35);
+        })();
+
+        // If app hasn't mounted in 6 seconds, reveal friendly refresh action
         window.__preloaderTimer = setTimeout(function() {
           var el = document.getElementById('preloader-fallback');
           if (el) el.style.display = 'block';
-        }, 5000);
+        }, 6000);
 
         function forceRefreshPortal() {
           try {

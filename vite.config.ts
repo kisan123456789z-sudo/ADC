@@ -20,8 +20,10 @@ export default defineConfig(() => {
           if (fs.existsSync(indexPath)) {
             fs.copyFileSync(indexPath, notFoundPath);
           }
-          // Also sync to docs/ directory for users choosing GitHub Pages "deploy from branch -> /docs"
           try {
+            if (fs.existsSync(docsDir)) {
+              fs.rmSync(docsDir, { recursive: true, force: true });
+            }
             fs.cpSync(distDir, docsDir, { recursive: true });
           } catch (e) {
             console.warn('Sync to docs directory note:', e);
