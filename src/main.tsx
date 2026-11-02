@@ -13,6 +13,7 @@ if (rootElement) {
   try {
     const root = createRoot(rootElement);
     root.render(<App />);
+    (window as any).__appMounted = true;
   } catch (error) {
     console.error('Fatal initialization error rendering AnuJay Dental Clinic:', error);
     rootElement.innerHTML = `

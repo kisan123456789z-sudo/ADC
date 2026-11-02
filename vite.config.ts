@@ -11,10 +11,23 @@ export default defineConfig(() => {
       react(), 
       tailwindcss(),
       {
+        name: 'inline-splash-logo',
+        transformIndexHtml(html: string) {
+          const logoPath = path.resolve(import.meta.dirname, 'public/aj-logo.png');
+          if (fs.existsSync(logoPath)) {
+            const logoBase64 = fs.readFileSync(logoPath).toString('base64');
+            const dataUri = `data:image/png;base64,${logoBase64}`;
+            return html.replace(/__AJ_LOGO_DATA_URI__/g, dataUri);
+          }
+          return html;
+        }
+      },
+      {
         name: 'github-pages-sync',
         closeBundle() {
           const distDir = path.resolve(import.meta.dirname, 'dist');
           const docsDir = path.resolve(import.meta.dirname, 'docs');
+          const rootAssetsDir = path.resolve(import.meta.dirname, 'assets');
           const indexPath = path.resolve(distDir, 'index.html');
           const notFoundPath = path.resolve(distDir, '404.html');
           if (fs.existsSync(indexPath)) {
@@ -25,6 +38,17 @@ export default defineConfig(() => {
               fs.rmSync(docsDir, { recursive: true, force: true });
             }
             fs.cpSync(distDir, docsDir, { recursive: true });
+            // Also sync dist/assets to root assets/ so users deploying root / on GitHub Pages have all hashed bundles
+            const distAssetsDir = path.resolve(distDir, 'assets');
+            if (fs.existsSync(distAssetsDir)) {
+              fs.cpSync(distAssetsDir, rootAssetsDir, { recursive: true });
+            }
+            // Ensure aj-logo.png is in root and root/assets
+            const logoPath = path.resolve(import.meta.dirname, 'public/aj-logo.png');
+            if (fs.existsSync(logoPath)) {
+              fs.copyFileSync(logoPath, path.resolve(import.meta.dirname, 'aj-logo.png'));
+              fs.copyFileSync(logoPath, path.resolve(rootAssetsDir, 'aj-logo.png'));
+            }
           } catch (e) {
             console.warn('Sync to docs directory note:', e);
           }

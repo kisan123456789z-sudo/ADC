@@ -3,12 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <script>
-      // GitHub Pages SPA & Mobile URL trailing-slash normalization
-      // Prevents relative assets (./assets/...) from failing when visiting https://<user>.github.io/<repo> without trailing slash
+      // GitHub Pages SPA & Mobile URL trailing-slash and repository-root normalization
       (function() {
         var path = window.location.pathname;
         if (path && !path.endsWith('/') && !path.split('/').pop().includes('.')) {
           window.location.replace(window.location.origin + path + '/' + window.location.search + window.location.hash);
+          return;
+        }
+        // If served from repository root on GitHub Pages without compiled bundle:
+        // Automatically forward to /docs/ where the compiled production bundle lives!
+        if (window.location.hostname.endsWith('github.io') && !path.includes('/docs')) {
+          var hasDevScript = document.querySelector && document.querySelector('script[src*="/src/main.tsx"]');
+          if (hasDevScript) {
+            var basePath = path.endsWith('/') ? path : path + '/';
+            window.location.replace(window.location.origin + basePath + 'docs/' + window.location.search + window.location.hash);
+          }
         }
       })();
     </script>
@@ -52,11 +61,11 @@
               <!-- Shimmer line sweep across logo -->
               <div style="position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%); transform: skewX(-20deg); animation: shimmerSweep 2.6s infinite ease-in-out; pointer-events: none;"></div>
 
-              <!-- Official AJ Tooth Logo Image with GitHub Pages Relative Path Fallback -->
+              <!-- Official AJ Tooth Logo Image with 0ms Embedded Data URI & Relative Path Fallback -->
               <img 
                 id="preloader-logo-img"
-                src="./assets/aj-logo.png" 
-                onerror="this.onerror=null; this.src='./aj-logo.png';" 
+                src="__AJ_LOGO_DATA_URI__" 
+                onerror="this.onerror=null; this.src='./assets/aj-logo.png'; this.onerror=function(){this.src='./aj-logo.png';};" 
                 alt="AnuJay Dental AJ Logo" 
                 loading="eager"
                 decoding="sync"
@@ -94,8 +103,8 @@
 
             <!-- Progress Bar Track -->
             <div style="position: relative; width: 100%; height: 11px; background: rgba(0, 19, 51, 0.95); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 9999px; overflow: hidden; padding: 2px; box-shadow: 0 0 15px rgba(56,189,248,0.3), inset 0 1px 3px rgba(0,0,0,0.7); box-sizing: border-box;">
-              <!-- Smooth Filling Line -->
-              <div id="preloader-fill" style="position: relative; width: 8%; height: 100%; border-radius: 9999px; background: linear-gradient(90deg, #0284c7 0%, #38bdf8 50%, #22d3ee 85%, #ffffff 100%); box-shadow: 0 0 12px rgba(56,189,248,0.85); transition: width 0.15s ease-out;">
+              <!-- Smooth Filling Line (CSS hardware-accelerated fill + JS sync) -->
+              <div id="preloader-fill" style="position: relative; width: 8%; height: 100%; border-radius: 9999px; background: linear-gradient(90deg, #0284c7 0%, #38bdf8 50%, #22d3ee 85%, #ffffff 100%); box-shadow: 0 0 12px rgba(56,189,248,0.85); animation: preloaderLineFill 2.4s cubic-bezier(0.1, 0.8, 0.2, 1) forwards; transition: width 0.15s ease-out;">
                 <!-- Inner shimmer wave -->
                 <div style="position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.7) 50%, transparent 100%); animation: fillShimmer 1.6s infinite linear; border-radius: 9999px;"></div>
                 <!-- Glowing lead tip -->
@@ -170,6 +179,13 @@
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-4px); }
         }
+        @keyframes preloaderLineFill {
+          0% { width: 8%; }
+          25% { width: 42%; }
+          55% { width: 72%; }
+          80% { width: 88%; }
+          100% { width: 96%; }
+        }
       </style>
       <script>
         (function() {
@@ -181,7 +197,7 @@
 
           var interval = setInterval(function() {
             var elapsed = Date.now() - startTime;
-            var pct = Math.min(94, Math.round((elapsed / duration) * 94));
+            var pct = Math.min(96, Math.round((elapsed / duration) * 96));
             if (fill) fill.style.width = Math.max(8, pct) + '%';
             if (pctEl) pctEl.textContent = pct + '%';
             if (statusEl) {
@@ -195,6 +211,9 @@
             }
             if (elapsed >= duration) {
               clearInterval(interval);
+              if (pctEl) pctEl.textContent = '100%';
+              if (fill) fill.style.width = '100%';
+              if (statusEl) statusEl.textContent = 'Welcome to AnuJay Dental';
             }
           }, 35);
         })();
@@ -225,6 +244,19 @@
 
     <!-- Application Script Entrypoint -->
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- GitHub Pages Root Fallback Router: If root index.html is served, seamlessly transition to /docs/ where compiled bundle lives -->
+    <script>
+      setTimeout(function() {
+        if (!window.__appMounted && window.location.hostname.endsWith('github.io')) {
+          var p = window.location.pathname;
+          if (!p.includes('/docs')) {
+            var target = p.endsWith('/') ? p + 'docs/' : p + '/docs/';
+            window.location.replace(window.location.origin + target + window.location.search + window.location.hash);
+          }
+        }
+      }, 1500);
+    </script>
 
     <!-- Service Worker Registration & Auto-Update -->
     <script>
