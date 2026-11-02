@@ -26,6 +26,7 @@ import { OffersAndNoticesSection } from './components/public/OffersAndNoticesSec
 import { NoticeDetailModal } from './components/common/NoticeDetailModal';
 import { AndroidInstallModal } from './components/common/AndroidInstallModal';
 import { MobileBottomNav } from './components/common/MobileBottomNav';
+import { SplashScreen } from './components/common/SplashScreen';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { 
   Eye, 
@@ -36,7 +37,7 @@ import {
 
 const MainApp: React.FC = () => {
   const { role, staffUser, logout } = useAuth();
-  const { settings, addPrescription, setActivePatientId } = useClinic();
+  const { settings, addPrescription, setActivePatientId, isLoading } = useClinic();
 
   // Navigation & View State
   const [activeView, setActiveView] = useState<'public' | 'staff' | 'admin' | 'patient'>('public');
@@ -466,6 +467,9 @@ const MainApp: React.FC = () => {
         onClose={() => setAndroidModalOpen(false)}
         deferredPrompt={deferredPrompt}
       />
+
+      {/* Branded Splash Screen Animation Overlay */}
+      <SplashScreen isLoading={isLoading} />
     </div>
   );
 };

@@ -27,45 +27,102 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preload" as="image" href="/assets/aj-logo.png" />
   </head>
   <body class="bg-slate-50 text-slate-800 antialiased font-sans selection:bg-blue-600 selection:text-white">
-    <!-- Immediate Branded Preloader inside #root: React replaces this automatically upon mounting -->
+    <!-- Immediate Branded Splash Screen Animation inside #root: Replaced seamlessly when React mounts -->
     <div id="root">
-      <div id="app-preloader" style="min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; padding: 24px; text-align: center; box-sizing: border-box;">
-        <div style="width: 72px; height: 72px; border-radius: 20px; background: linear-gradient(135deg, #00205b 0%, #003882 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0, 32, 91, 0.2); margin-bottom: 20px;">
-          <svg style="width: 38px; height: 38px; color: #ffffff; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;" viewBox="0 0 24 24">
-            <path d="M12 2C7.5 2 4 5.5 4 10c0 4.5 2 9 4.5 12 1-1.5 2.5-4 3.5-5 1 1 2.5 3.5 3.5 5 2.5-3 4.5-7.5 4.5-12 0-4.5-3.5-8-8-8z"/>
+      <div id="app-preloader" style="position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 38%, #002d72 0%, #001f56 50%, #001233 100%); font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; padding: 24px; text-align: center; box-sizing: border-box; overflow: hidden; z-index: 99999;">
+        <!-- Glowing ambient backdrop -->
+        <div style="position: absolute; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(circle, rgba(56,189,248,0.2) 0%, rgba(2,132,199,0.08) 60%, transparent 80%); pointer-events: none; animation: splashPulse 3s infinite ease-in-out;"></div>
+        
+        <!-- Ripple Ring -->
+        <div style="position: absolute; width: 220px; height: 220px; border-radius: 50%; border: 1px solid rgba(56,189,248,0.18); pointer-events: none; animation: splashRipple 3s infinite cubic-bezier(0, 0.2, 0.8, 1);"></div>
+
+        <!-- Logo Icon Box -->
+        <div style="position: relative; width: 104px; height: 104px; border-radius: 20px; background: rgba(0, 23, 61, 0.9); border: 1px solid rgba(56, 189, 248, 0.35); box-shadow: 0 16px 40px rgba(0, 18, 51, 0.8), 0 0 26px rgba(56, 189, 248, 0.25); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; overflow: hidden; padding: 10px; box-sizing: border-box;">
+          <!-- Shimmer line sweep -->
+          <div style="position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%); animation: splashShimmer 2.6s infinite ease-in-out; pointer-events: none;"></div>
+
+          <!-- Official AJ Logo Image -->
+          <img 
+            src="/assets/aj-logo.png" 
+            onerror="this.onerror=null; this.src='/aj-logo.png'; this.onerror=function(){this.src='./assets/aj-logo.png';};" 
+            alt="AnuJay Dental AJ Logo" 
+            loading="eager"
+            decoding="sync"
+            style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(56,189,248,0.45));" 
+          />
+
+          <!-- Sparkling glint -->
+          <svg style="position: absolute; top: 8px; right: 8px; width: 12px; height: 12px; fill: #38bdf8; animation: splashStar 3s infinite ease-in-out;" viewBox="0 0 24 24">
+            <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/>
           </svg>
         </div>
-        <h1 style="margin: 0 0 6px; font-size: 22px; font-weight: 800; color: #00205b; letter-spacing: -0.02em;">
-          AnuJay Dental Clinic
+
+        <!-- Typography -->
+        <h1 style="margin: 0 0 6px; font-size: 24px; font-weight: 800; color: #ffffff; letter-spacing: -0.02em; text-shadow: 0 2px 10px rgba(0,0,0,0.4);">
+          AnuJay <span style="color: #38bdf8; font-weight: 600;">Dental</span> Clinic
         </h1>
-        <p style="margin: 0 0 24px; font-size: 13px; color: #64748b; font-weight: 500;">
-          Loading clinic portal &amp; patient records...
+        <p style="margin: 0 0 28px; font-size: 11px; color: rgba(224, 242, 254, 0.95); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;">
+          UNIQUE BY NATURE, UNBEATABLE IN CARE.
         </p>
         
-        <!-- Animated loader bar -->
-        <div style="width: 140px; height: 4px; background: #e2e8f0; border-radius: 999px; overflow: hidden; position: relative;">
-          <div style="width: 50%; height: 100%; background: #00205b; border-radius: 999px; animation: clinicPulse 1.2s infinite ease-in-out;"></div>
+        <!-- High-Visibility Mobile-Optimized Filling Loading Bar -->
+        <div style="width: 240px; max-width: 82vw; height: 10px; background: rgba(0, 19, 51, 0.95); border: 1.5px solid rgba(56, 189, 248, 0.45); border-radius: 999px; overflow: hidden; position: relative; box-shadow: inset 0 1px 4px rgba(0,0,0,0.7), 0 0 16px rgba(56,189,248,0.3); padding: 2px; box-sizing: border-box;">
+          <div style="height: 100%; border-radius: 999px; background: linear-gradient(90deg, #0284c7 0%, #38bdf8 50%, #67e8f9 85%, #ffffff 100%); box-shadow: 0 0 12px rgba(56,189,248,0.9); animation: preloaderFill 2.2s cubic-bezier(0.1, 0.8, 0.2, 1) forwards; position: relative;">
+            <div style="position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.7) 50%, transparent 100%); animation: preloaderShimmer 1.5s infinite linear; border-radius: 999px;"></div>
+            <div style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 6px; height: 6px; border-radius: 50%; background: #ffffff; box-shadow: 0 0 8px #38bdf8, 0 0 3px #ffffff;"></div>
+          </div>
         </div>
 
+        <p style="margin: 12px 0 0; font-size: 12px; color: rgba(224, 242, 254, 0.75); font-weight: 600; letter-spacing: 0.02em;">
+          Initializing clinic systems...
+        </p>
+
         <!-- Diagnostic / Recovery Fallback (visible if mobile device gets stuck due to stale cache) -->
-        <div id="preloader-fallback" style="display: none; margin-top: 28px; max-width: 300px; animation: fadeIn 0.4s ease-out;">
+        <div id="preloader-fallback" style="display: none; margin-top: 26px; max-width: 290px; animation: fadeIn 0.4s ease-out;">
           <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px; line-height: 1.4;">
-            Loading is taking longer than usual. Tap below to clear cached files and reload.
+            Loading is taking longer than usual. Tap below to refresh.
           </p>
           <button 
             type="button" 
             onclick="forceRefreshPortal()" 
-            style="background: #00205b; color: #ffffff; border: none; padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(0,32,91,0.2);">
+            style="background: #38bdf8; color: #001f56; border: none; padding: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px rgba(56,189,248,0.35);">
             Clear Cache &amp; Refresh
           </button>
         </div>
       </div>
       <style>
-        @keyframes clinicPulse {
+        @keyframes preloaderFill {
+          0% { width: 8%; }
+          30% { width: 48%; }
+          70% { width: 85%; }
+          100% { width: 98%; }
+        }
+        @keyframes preloaderShimmer {
           0% { transform: translateX(-100%); }
-          100% { transform: translateX(250%); }
+          100% { transform: translateX(200%); }
+        }
+        @keyframes splashPulse {
+          0%, 100% { transform: scale(1); opacity: 0.2; }
+          50% { transform: scale(1.15); opacity: 0.35; }
+        }
+        @keyframes splashRipple {
+          0% { transform: scale(0.85); opacity: 0.6; }
+          100% { transform: scale(1.4); opacity: 0; }
+        }
+        @keyframes splashShimmer {
+          0% { transform: translateX(-120%) skewX(-20deg); }
+          45%, 100% { transform: translateX(180%) skewX(-20deg); }
+        }
+        @keyframes splashToothDraw {
+          0% { stroke-dashoffset: 80; opacity: 0; }
+          100% { stroke-dashoffset: 0; opacity: 1; }
+        }
+        @keyframes splashStar {
+          0%, 100% { transform: rotate(0deg) scale(0.9); opacity: 0.7; }
+          50% { transform: rotate(180deg) scale(1.2); opacity: 1; }
         }
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(6px); }

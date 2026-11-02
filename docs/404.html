@@ -2,30 +2,129 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // GitHub Pages SPA & Mobile URL trailing-slash normalization
+      // Prevents relative assets (./assets/...) from failing when visiting https://<user>.github.io/<repo> without trailing slash
+      (function() {
+        var path = window.location.pathname;
+        if (path && !path.endsWith('/') && !path.split('/').pop().includes('.')) {
+          window.location.replace(window.location.origin + path + '/' + window.location.search + window.location.hash);
+        }
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
-    <title>Anujay Dental Clinic</title>
-    <meta name="description" content="Official portal and clinic management app for Anujay Dental Clinic - Online booking, staff and admin dashboard, prescriptions, and inventory." />
-    <meta property="og:title" content="Anujay Dental Clinic" />
-    <meta property="og:description" content="Official portal and clinic management app for Anujay Dental Clinic - Online booking, staff and admin dashboard, prescriptions, and inventory." />
+    <title>AnuJay Dental Clinic</title>
+    <meta name="description" content="Official portal and clinic management app for AnuJay Dental Clinic - Online booking, staff and admin dashboard, prescriptions, and inventory." />
+    <meta property="og:title" content="AnuJay Dental Clinic" />
+    <meta property="og:description" content="Official portal and clinic management app for AnuJay Dental Clinic - Online booking, staff and admin dashboard, prescriptions, and inventory." />
     <meta property="og:type" content="website" />
     <meta name="theme-color" content="#00205b" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Anujay Clinic" />
+    <meta name="apple-mobile-web-app-title" content="AnuJay Clinic" />
     <link rel="manifest" href="./manifest.json" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script type="module" crossorigin src="./assets/index-ByAWHLJe.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-B6RT6dP8.css">
+    <script type="module" crossorigin src="./assets/index-BeWaqzfJ.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-CPsexeN2.css">
   </head>
   <body class="bg-slate-50 text-slate-800 antialiased font-sans selection:bg-blue-600 selection:text-white">
-    <div id="root"></div>
+    <!-- Immediate Branded Splash Screen Animation inside #root: Replaced seamlessly when React mounts -->
+    <div id="root">
+      <div id="app-preloader" style="position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 38%, #002d72 0%, #001f56 50%, #001233 100%); font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; padding: 24px; text-align: center; box-sizing: border-box; overflow: hidden; z-index: 99999;">
+        <!-- Glowing ambient backdrop -->
+        <div style="position: absolute; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(circle, rgba(56,189,248,0.2) 0%, rgba(2,132,199,0.08) 60%, transparent 80%); pointer-events: none; animation: splashPulse 3s infinite ease-in-out;"></div>
+        
+        <!-- Ripple Ring -->
+        <div style="position: absolute; width: 220px; height: 220px; border-radius: 50%; border: 1px solid rgba(56,189,248,0.18); pointer-events: none; animation: splashRipple 3s infinite cubic-bezier(0, 0.2, 0.8, 1);"></div>
+
+        <!-- Logo Icon Box -->
+        <div style="position: relative; width: 104px; height: 104px; border-radius: 20px; background: rgba(0, 23, 61, 0.9); border: 1px solid rgba(56, 189, 248, 0.35); box-shadow: 0 16px 40px rgba(0, 18, 51, 0.8), 0 0 26px rgba(56, 189, 248, 0.25); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; overflow: hidden; padding: 10px; box-sizing: border-box;">
+          <!-- Shimmer line sweep -->
+          <div style="position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%); animation: splashShimmer 2.6s infinite ease-in-out; pointer-events: none;"></div>
+
+          <!-- Official AJ Logo Image -->
+          <img 
+            src="./assets/aj-logo.png" 
+            onerror="this.onerror=null; this.src='./assets/Adobe Express - file.png'; this.onerror=function(){this.src='./assets/aistudio/image_7cb922f6.png';};" 
+            alt="AnuJay Dental AJ Logo" 
+            style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(56,189,248,0.45));" 
+          />
+
+          <!-- Sparkling glint -->
+          <svg style="position: absolute; top: 8px; right: 8px; width: 12px; height: 12px; fill: #38bdf8; animation: splashStar 3s infinite ease-in-out;" viewBox="0 0 24 24">
+            <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/>
+          </svg>
+        </div>
+
+        <!-- Typography -->
+        <h1 style="margin: 0 0 6px; font-size: 24px; font-weight: 800; color: #ffffff; letter-spacing: -0.02em; text-shadow: 0 2px 10px rgba(0,0,0,0.4);">
+          AnuJay <span style="color: #38bdf8; font-weight: 600;">Dental</span> Clinic
+        </h1>
+        <p style="margin: 0 0 28px; font-size: 11px; color: rgba(224, 242, 254, 0.95); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;">
+          UNIQUE BY NATURE, UNBEATABLE IN CARE.
+        </p>
+        
+        <!-- Animated loader bar -->
+        <div style="width: 180px; height: 5px; background: rgba(0, 18, 51, 0.8); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 999px; overflow: hidden; position: relative; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);">
+          <div style="position: absolute; top: 0; bottom: 0; left: 0; width: 45%; background: linear-gradient(90deg, #38bdf8, #2dd4bf, #ffffff); border-radius: 999px; box-shadow: 0 0 10px rgba(56,189,248,0.7); animation: clinicPulse 1.4s infinite ease-in-out;"></div>
+        </div>
+
+        <p style="margin: 12px 0 0; font-size: 12px; color: rgba(224, 242, 254, 0.65); font-weight: 500; letter-spacing: 0.02em;">
+          Initializing clinic portal...
+        </p>
+
+        <!-- Diagnostic / Recovery Fallback (visible if mobile device gets stuck due to stale cache) -->
+        <div id="preloader-fallback" style="display: none; margin-top: 26px; max-width: 290px; animation: fadeIn 0.4s ease-out;">
+          <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px; line-height: 1.4;">
+            Loading is taking longer than usual. Tap below to refresh.
+          </p>
+          <button 
+            type="button" 
+            onclick="forceRefreshPortal()" 
+            style="background: #38bdf8; color: #001f56; border: none; padding: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px rgba(56,189,248,0.35);">
+            Clear Cache &amp; Refresh
+          </button>
+        </div>
+      </div>
+      <style>@keyframes clinicPulse{0%{transform:translate(-120%)}to{transform:translate(260%)}}@keyframes splashPulse{0%,to{opacity:.2;transform:scale(1)}50%{opacity:.35;transform:scale(1.15)}}@keyframes splashRipple{0%{opacity:.6;transform:scale(.85)}to{opacity:0;transform:scale(1.4)}}@keyframes splashShimmer{0%{transform:translate(-120%)skew(-20deg)}45%,to{transform:translate(180%)skew(-20deg)}}@keyframes splashToothDraw{0%{stroke-dashoffset:80px;opacity:0}to{stroke-dashoffset:0;opacity:1}}@keyframes splashStar{0%,to{opacity:.7;transform:rotate(0)scale(.9)}50%{opacity:1;transform:rotate(180deg)scale(1.2)}}@keyframes fadeIn{0%{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}</style>
+      <script>
+        // If app hasn't mounted in 5 seconds, reveal friendly refresh action
+        window.__preloaderTimer = setTimeout(function() {
+          var el = document.getElementById('preloader-fallback');
+          if (el) el.style.display = 'block';
+        }, 5000);
+
+        function forceRefreshPortal() {
+          try {
+            if ('caches' in window) {
+              caches.keys().then(function(keys) {
+                keys.forEach(function(k) { caches.delete(k); });
+              });
+            }
+            if ('serviceWorker' in navigator) {
+              navigator.serviceWorker.getRegistrations().then(function(regs) {
+                regs.forEach(function(r) { r.unregister(); });
+              });
+            }
+          } catch(e) {}
+          window.location.reload(true);
+        }
+      </script>
+    </div>
+
+    <!-- Application Script Entrypoint -->
+
+    <!-- Service Worker Registration & Auto-Update -->
     <script>
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js').catch(() => {});
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('./sw.js').then(function(registration) {
+            // Check for service worker updates
+            registration.update().catch(function() {});
+          }).catch(function() {});
         });
       }
     </script>
