@@ -33,12 +33,12 @@
       "name": "Book Appointment",
       "short_name": "Book",
       "description": "Instant dental consultation booking",
-      "url": "/#book",
+      "url": "./#book",
       "icons": [
         {
-          "src": "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=96&auto=format&fit=crop&q=80",
+          "src": "./assets/aj-logo.png",
           "sizes": "96x96",
-          "type": "image/jpeg"
+          "type": "image/png"
         }
       ]
     },
@@ -46,12 +46,12 @@
       "name": "Patient Portal",
       "short_name": "Records",
       "description": "Access your dental reports and prescriptions",
-      "url": "/#patient-portal",
+      "url": "./#patient-portal",
       "icons": [
         {
-          "src": "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=96&auto=format&fit=crop&q=80",
+          "src": "./assets/aj-logo.png",
           "sizes": "96x96",
-          "type": "image/jpeg"
+          "type": "image/png"
         }
       ]
     }

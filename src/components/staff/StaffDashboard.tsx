@@ -27,7 +27,8 @@ import {
   RefreshCw,
   Upload,
   Image as ImageIcon,
-  Megaphone
+  Megaphone,
+  Folder
 } from 'lucide-react';
 import { StaffNoticeComposer } from './notices/StaffNoticeComposer';
 import { useClinic } from '../../context/ClinicContext';
@@ -42,6 +43,7 @@ import { ConfirmModal } from '../common/ConfirmModal';
 import { PrescriptionEditorModal } from '../prescription/PrescriptionEditorModal';
 import { PatientBillingManager } from '../billing/PatientBillingManager';
 import { NewPrescriptionSection } from '../prescription/NewPrescriptionSection';
+import { PatientsRecordFolderView } from '../common/PatientsRecordFolderView';
 
 export const StaffDashboard: React.FC = () => {
   const { 
@@ -71,7 +73,7 @@ export const StaffDashboard: React.FC = () => {
   } = useClinic();
   const { staffUser, logout } = useAuth();
 
-  const [activeTab, setActiveTab] = useState<'patient_billing' | 'prescription' | 'notifications' | 'inventory' | 'patients' | 'content' | 'notices'>('patient_billing');
+  const [activeTab, setActiveTab] = useState<'patients_folder' | 'patient_billing' | 'prescription' | 'notifications' | 'inventory' | 'patients' | 'content' | 'notices'>('patients_folder');
 
   // Search & filter states
   const [patientSearch, setPatientSearch] = useState('');
@@ -218,6 +220,24 @@ export const StaffDashboard: React.FC = () => {
             <span>Official Prescription</span>
           </button>
 
+          {/* TAB: PATIENTS RECORD FOLDER */}
+          <button
+            onClick={() => setActiveTab('patients_folder')}
+            className={`py-3 px-4 border-b-2 flex items-center gap-2 whitespace-nowrap transition ${
+              activeTab === 'patients_folder'
+                ? 'border-white text-white font-bold bg-white/10'
+                : 'border-transparent text-blue-200 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <Folder className="w-4 h-4 text-amber-300" />
+            <span className="flex items-center gap-1.5">
+              <span>Patients Record Folder</span>
+              <span className="px-1.5 py-0.5 bg-amber-400 text-slate-950 text-[10px] font-black rounded-full shadow-xs">
+                📁 Folder
+              </span>
+            </span>
+          </button>
+
           <button
             onClick={() => setActiveTab('patient_billing')}
             className={`py-3 px-4 border-b-2 flex items-center gap-2 whitespace-nowrap transition ${
@@ -305,6 +325,21 @@ export const StaffDashboard: React.FC = () => {
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6">
         
+        {/* ================= PATIENTS RECORD FOLDER TAB ================= */}
+        {activeTab === 'patients_folder' && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            <PatientsRecordFolderView
+              userRole="staff"
+              onOpenPrescriptionModal={(rx) => {
+                setSelectedPrescriptionForModal(rx);
+                setIsPrescriptionModalOpen(true);
+              }}
+              onOpenAddDocumentModal={() => setActiveTab('patient_billing')}
+              onOpenAddInvoiceModal={() => setActiveTab('patient_billing')}
+            />
+          </div>
+        )}
+
         {/* ================= PATIENT REPORTS & BILLING TAB ================= */}
         {activeTab === 'patient_billing' && (
           <PatientBillingManager

@@ -33,9 +33,14 @@ import {
   AlertTriangle,
   ArrowRight,
   ExternalLink,
-  Smartphone
+  Smartphone,
+  Folder
 } from 'lucide-react';
 import { useClinic } from '../../context/ClinicContext';
+import { 
+  buildConnectedPatientRecord, 
+  exportSinglePatientFolderZip 
+} from '../../utils/patientFolderManager';
 import { 
   Patient, 
   PatientDocument, 
@@ -71,6 +76,8 @@ export const PatientBillingManager: React.FC<PatientBillingManagerProps> = ({
 }) => {
   const {
     patients,
+    prescriptions,
+    bookings,
     documents,
     invoices,
     patientPayments,
@@ -730,6 +737,30 @@ export const PatientBillingManager: React.FC<PatientBillingManagerProps> = ({
               >
                 <Plus className="w-4 h-4" />
                 <span>Create Invoice</span>
+              </button>
+              <button
+                onClick={async () => {
+                  if (currentPatient) {
+                    try {
+                      await exportSinglePatientFolderZip(buildConnectedPatientRecord(currentPatient, {
+                        prescriptions,
+                        bookings,
+                        documents,
+                        invoices,
+                        patientPayments,
+                        auditLogs
+                      }));
+                      showToast(`Downloaded folder for ${currentPatient.name} (.zip)`);
+                    } catch (err: any) {
+                      showToast(`Failed to download folder: ${err?.message || 'Error'}`, 'error');
+                    }
+                  }
+                }}
+                className="px-3.5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black rounded-xl shadow-xs flex items-center gap-1.5 transition"
+                title="Download this patient's complete folder (.zip) containing profile, prescriptions, visits, bills, and documents"
+              >
+                <Folder className="w-4 h-4" />
+                <span>Patient Folder (.zip)</span>
               </button>
             </div>
           </div>

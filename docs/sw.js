@@ -1,6 +1,5 @@
-// Service Worker for Anujay Dental Clinic PWA & Mobile Web App
-// Version 2 - GitHub Pages resilient caching
-const CACHE_NAME = 'anujay-dental-v2-ghpages';
+// Version 3 - GitHub Pages resilient caching with matching splash screen
+const CACHE_NAME = 'anujay-dental-v3-ghpages';
 
 // Assets to cache on initial install
 const INITIAL_CACHE = [

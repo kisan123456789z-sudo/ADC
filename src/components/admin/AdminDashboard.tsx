@@ -53,10 +53,12 @@ import {
   BellRing,
   MessageSquare,
   Megaphone,
-  FileEdit
+  FileEdit,
+  Folder
 } from 'lucide-react';
 import { useClinic } from '../../context/ClinicContext';
 import { useAuth } from '../../context/AuthContext';
+import { PatientsRecordFolderView } from '../common/PatientsRecordFolderView';
 import { 
   ClinicSettings, 
   Booking, 
@@ -180,7 +182,7 @@ export const AdminDashboard: React.FC = () => {
 
   // Active Main Tab
   const [activeTab, setActiveTab] = useState<
-    'website_cms' | 'prescriptions' | 'patient_billing' | 'finances' | 'staff' | 'inventory' | 'whatsapp_campaigns' | 'clinic_notices' | 'security'
+    'website_cms' | 'prescriptions' | 'patients_folder' | 'patient_billing' | 'finances' | 'staff' | 'inventory' | 'whatsapp_campaigns' | 'clinic_notices' | 'security'
   >('website_cms');
 
   // Prescriptions pending approval count
@@ -657,6 +659,24 @@ export const AdminDashboard: React.FC = () => {
                   {pendingPrescriptionsCount} Pending
                 </span>
               )}
+            </span>
+          </button>
+
+          {/* TAB: PATIENTS RECORD FOLDER */}
+          <button
+            onClick={() => setActiveTab('patients_folder')}
+            className={`py-3 px-4 border-b-2 flex items-center gap-2 whitespace-nowrap transition cursor-pointer ${
+              activeTab === 'patients_folder'
+                ? 'border-white text-white font-bold bg-white/10'
+                : 'border-transparent text-purple-200 hover:text-white'
+            }`}
+          >
+            <Folder className="w-4 h-4 text-amber-300" />
+            <span className="flex items-center gap-1.5">
+              <span>Patients Record Folder</span>
+              <span className="px-1.5 py-0.5 bg-amber-400 text-slate-950 text-[10px] font-black rounded-full shadow-xs">
+                📁 Folder
+              </span>
             </span>
           </button>
 
@@ -2176,6 +2196,18 @@ export const AdminDashboard: React.FC = () => {
         {activeTab === 'prescriptions' && (
           <div className="space-y-6 animate-in fade-in duration-200">
             <NewPrescriptionSection />
+          </div>
+        )}
+
+        {/* ================= TAB: PATIENTS RECORD FOLDER ================= */}
+        {activeTab === 'patients_folder' && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            <PatientsRecordFolderView
+              userRole="admin"
+              onOpenPrescriptionModal={() => setActiveTab('prescriptions')}
+              onOpenAddDocumentModal={() => setActiveTab('patient_billing')}
+              onOpenAddInvoiceModal={() => setActiveTab('patient_billing')}
+            />
           </div>
         )}
 
