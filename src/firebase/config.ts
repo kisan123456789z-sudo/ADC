@@ -2,6 +2,7 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { initializeFirestore, doc, getDocFromServer } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
+import { connectivityService } from '../services/connectivityService';
 
 // Initialize Firebase App singleton
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
@@ -63,15 +64,25 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
     path
   };
 
-  // If offline or permission denied (unauthenticated visitor or restricted scope), log warning gracefully
+  // Distinguish genuine offline/network errors from auth or permission errors
   if (
     errMsg.includes('the client is offline') || 
     errMsg.includes('Could not reach Cloud Firestore backend') || 
-    errMsg.includes('offline') ||
+    errMsg.includes('offline')
+  ) {
+    console.warn('Firestore offline notice:', errMsg);
+    try {
+      connectivityService.reportNetworkFailure(error);
+    } catch {}
+    return;
+  }
+
+  // Permission denied or unauthenticated visitors are NOT internet disconnections
+  if (
     errMsg.includes('permission-denied') ||
     errMsg.includes('Missing or insufficient permissions')
   ) {
-    console.warn('Firestore notice (handled):', errMsg);
+    console.warn('Firestore permission notice (handled):', errMsg);
     return;
   }
   console.error('Firestore Error:', JSON.stringify(errInfo));

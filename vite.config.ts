@@ -43,11 +43,19 @@ export default defineConfig(() => {
             if (fs.existsSync(distAssetsDir)) {
               fs.cpSync(distAssetsDir, rootAssetsDir, { recursive: true });
             }
-            // Ensure aj-logo.png is in root and root/assets
+            // Ensure aj-logo.png, offline.html, and sw.js are in root and docs
             const logoPath = path.resolve(import.meta.dirname, 'public/aj-logo.png');
             if (fs.existsSync(logoPath)) {
               fs.copyFileSync(logoPath, path.resolve(import.meta.dirname, 'aj-logo.png'));
               fs.copyFileSync(logoPath, path.resolve(rootAssetsDir, 'aj-logo.png'));
+            }
+            const offlinePath = path.resolve(import.meta.dirname, 'public/offline.html');
+            if (fs.existsSync(offlinePath)) {
+              fs.copyFileSync(offlinePath, path.resolve(import.meta.dirname, 'offline.html'));
+            }
+            const swPath = path.resolve(import.meta.dirname, 'public/sw.js');
+            if (fs.existsSync(swPath)) {
+              fs.copyFileSync(swPath, path.resolve(import.meta.dirname, 'sw.js'));
             }
           } catch (e) {
             console.warn('Sync to docs directory note:', e);

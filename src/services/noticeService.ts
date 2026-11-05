@@ -8,6 +8,7 @@ import {
   writeBatch 
 } from 'firebase/firestore';
 import { db } from '../firebase/config';
+import { connectivityService } from './connectivityService';
 import { 
   ClinicNotice, 
   NoticeStatus, 
@@ -260,8 +261,11 @@ export async function getNoticesList(): Promise<ClinicNotice[]> {
         return enriched;
       }
     }
-  } catch (err) {
+  } catch (err: any) {
     console.warn("Could not fetch notices from content document:", err);
+    try {
+      connectivityService.reportNetworkFailure(err);
+    } catch {}
   }
 
   // Check local cache
@@ -275,12 +279,15 @@ export async function getNoticesList(): Promise<ClinicNotice[]> {
     }
   } catch {}
 
-  // If initial load and empty, initialize with seed notices
-  try {
-    await saveNoticesToStore(INITIAL_CLINIC_NOTICES);
-  } catch {}
+  // If in development and completely fresh, allow initial seed; never substitute mock notices in production on network failure
+  if (import.meta.env.DEV) {
+    try {
+      await saveNoticesToStore(INITIAL_CLINIC_NOTICES);
+      return enrichNoticeThumbnails(INITIAL_CLINIC_NOTICES);
+    } catch {}
+  }
 
-  return enrichNoticeThumbnails(INITIAL_CLINIC_NOTICES);
+  return [];
 }
 
 /**

@@ -34,8 +34,11 @@ import {
   MessageCircle, 
   UserCheck
 } from 'lucide-react';
+import { ConnectivityProvider, useConnectivity } from './context/ConnectivityContext';
+import { OfflineScreen } from './components/common/OfflineScreen';
 
 const MainApp: React.FC = () => {
+  const { isOnline, status, statusMessage, hintText, checkConnectivity } = useConnectivity();
   const { role, staffUser, logout } = useAuth();
   const { settings, addPrescription, setActivePatientId, isLoading } = useClinic();
 
@@ -126,6 +129,22 @@ const MainApp: React.FC = () => {
   const whatsappUrl = `https://wa.me/${cleanWhatsApp}?text=${encodeURIComponent(
     `Hello ${settings?.clinicName || 'Anujay Dental Clinic'}, I would like to inquire about dental treatment.`
   )}`;
+
+  // GLOBAL OFFLINE ENFORCEMENT
+  // When offline, immediately stop displaying normal application interface.
+  // Displays the self-contained Offline Page and prevents displaying any dashboard,
+  // mock data, sample records, patient records, or partially loaded screens.
+  // Preserves existing login sessions and real data.
+  if (!isOnline) {
+    return (
+      <OfflineScreen
+        status={status}
+        statusMessage={statusMessage}
+        hintText={hintText}
+        onRetry={checkConnectivity}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-white text-slate-900 font-sans antialiased selection:bg-blue-600 selection:text-white">
@@ -477,11 +496,13 @@ const MainApp: React.FC = () => {
 export default function App() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <ClinicProvider>
-          <MainApp />
-        </ClinicProvider>
-      </AuthProvider>
+      <ConnectivityProvider>
+        <AuthProvider>
+          <ClinicProvider>
+            <MainApp />
+          </ClinicProvider>
+        </AuthProvider>
+      </ConnectivityProvider>
     </ErrorBoundary>
   );
 }

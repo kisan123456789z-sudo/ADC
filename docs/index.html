@@ -239,13 +239,15 @@
 
     <!-- Lifetime Static Host / GitHub Pages Fail-Safe Bundle Loader -->
 
-    <!-- Service Worker Registration & Auto-Update -->
+    <!-- Service Worker Registration & Global Offline System -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('./sw.js').then(function(registration) {
+          navigator.serviceWorker.register('./sw.js', { scope: './' }).then(function(registration) {
             registration.update().catch(function() {});
-          }).catch(function() {});
+          }).catch(function(err) {
+            console.warn('Service worker registration note:', err);
+          });
         });
       }
     </script>

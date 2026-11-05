@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7fbfa">
+  <title>You're Offline | Anujay Dental Clinic</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #173b3b;
+      --muted: #607575;
+      --teal: #167d78;
+      --teal-dark: #105f5b;
+      --surface: #ffffff;
+      --line: #e1ece9;
+      --bg: #f3f8f7;
+    }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; margin: 0; }
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 12% 12%, rgba(22,125,120,.09), transparent 30%),
+        radial-gradient(circle at 90% 85%, rgba(22,125,120,.07), transparent 28%),
+        var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .page { width: 100%; max-width: 520px; text-align: center; }
+    .brand {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin-bottom: 26px; color: var(--ink); font-weight: 750;
+      letter-spacing: -.02em; font-size: 17px;
+    }
+    .brand-mark {
+      width: 38px; height: 38px; border-radius: 13px;
+      display: grid; place-items: center; color: white;
+      background: linear-gradient(145deg, #23958e, #11645f);
+      box-shadow: 0 7px 18px rgba(22,125,120,.2);
+    }
+    .card {
+      background: rgba(255,255,255,.94);
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      padding: 42px 34px 34px;
+      box-shadow: 0 20px 60px rgba(25,65,61,.08);
+    }
+    .illustration {
+      width: 142px; height: 142px; margin: 0 auto 25px;
+      border-radius: 50%; display: grid; place-items: center;
+      background: #eaf5f2; position: relative;
+    }
+    .illustration:after {
+      content: ""; position: absolute; width: 13px; height: 13px;
+      border-radius: 50%; background: #f1bd65; right: 9px; top: 19px;
+      box-shadow: -112px 65px 0 -3px #8dc9bf;
+    }
+    h1 { margin: 0 0 12px; font-size: clamp(27px, 6vw, 34px); letter-spacing: -.045em; }
+    .message {
+      max-width: 370px; margin: 0 auto; color: var(--muted);
+      font-size: 15px; line-height: 1.7;
+    }
+    .status {
+      display: inline-flex; align-items: center; gap: 9px;
+      margin: 25px 0 22px; padding: 9px 13px;
+      border-radius: 999px; background: #fff5e8; color: #93601d;
+      font-size: 12px; font-weight: 700;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #e5a33d; }
+    button {
+      width: 100%; max-width: 240px; min-height: 48px;
+      border: 0; border-radius: 13px; padding: 12px 20px;
+      background: var(--teal); color: white; font-size: 14px;
+      font-weight: 750; cursor: pointer;
+      box-shadow: 0 8px 18px rgba(22,125,120,.2);
+      transition: transform .15s ease, background .15s ease;
+    }
+    button:hover { background: var(--teal-dark); transform: translateY(-1px); }
+    button:focus-visible { outline: 3px solid #9bd6ce; outline-offset: 3px; }
+    button:disabled { opacity: .7; cursor: wait; transform: none; }
+    .hint { margin: 18px 0 0; color: #829391; font-size: 12px; line-height: 1.6; }
+    footer { margin-top: 22px; color: #8a9b99; font-size: 11px; }
+    @media (max-width: 480px) {
+      body { padding: 16px; }
+      .brand { margin-bottom: 18px; }
+      .card { padding: 34px 22px 28px; border-radius: 22px; }
+      .illustration { width: 126px; height: 126px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page" aria-labelledby="offline-title">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none">
+          <path d="M12 4v16M4 12h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span>Anujay Dental Clinic</span>
+    </div>
+
+    <section class="card">
+      <div class="illustration" aria-hidden="true">
+        <svg width="86" height="86" viewBox="0 0 100 100" fill="none">
+          <path d="M17 39c18-17 48-17 66 0" stroke="#167d78" stroke-width="6" stroke-linecap="round"/>
+          <path d="M28 51c12-11 32-11 44 0" stroke="#167d78" stroke-width="6" stroke-linecap="round"/>
+          <path d="M40 63c6-5 14-5 20 0" stroke="#167d78" stroke-width="6" stroke-linecap="round"/>
+          <circle cx="50" cy="76" r="4.5" fill="#167d78"/>
+          <path d="M19 18l62 64" stroke="#e09b43" stroke-width="7" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <h1 id="offline-title">You're Offline</h1>
+      <p class="message">
+        No internet connection detected. Please check your connection to continue using Anujay Dental Clinic.
+      </p>
+
+      <div class="status" role="status" aria-live="polite">
+        <span class="dot" id="status-dot"></span>
+        <span id="status-text">Internet connection unavailable</span>
+      </div>
+
+      <div>
+        <button id="retry-button" type="button">Try Again</button>
+      </div>
+      <p class="hint" id="hint">Your clinic information is protected. Reconnect to the internet and try again.</p>
+    </section>
+
+    <footer>© Anujay Dental Clinic</footer>
+  </main>
+
+  <script>
+    const retryButton = document.getElementById('retry-button');
+    const statusText = document.getElementById('status-text');
+    const hint = document.getElementById('hint');
+
+    function updateStatus() {
+      if (navigator.onLine) {
+        statusText.textContent = 'Connection detected — checking access…';
+        hint.textContent = 'Please wait while the page checks the connection.';
+      } else {
+        statusText.textContent = 'Internet connection unavailable';
+        hint.textContent = 'Your clinic information is protected. Reconnect to the internet and try again.';
+      }
+    }
+
+    retryButton.addEventListener('click', () => {
+      retryButton.disabled = true;
+      retryButton.textContent = 'Checking…';
+      statusText.textContent = 'Checking connection…';
+      // Reload the requested page. The application/service worker should
+      // route back online users to the app and keep offline users here.
+      window.location.reload();
+    });
+
+    window.addEventListener('online', updateStatus);
+    window.addEventListener('offline', updateStatus);
+    updateStatus();
+  </script>
+</body>
+</html>

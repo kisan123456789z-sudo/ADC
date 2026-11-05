@@ -1,27 +1,32 @@
-// Version 3 - GitHub Pages resilient caching with matching splash screen
-const CACHE_NAME = 'anujay-dental-v3-ghpages';
+// Anujay Dental Clinic - Service Worker v4 (Global Offline System)
+// Resilient caching for GitHub Pages (/ADC/) and root domain environments.
 
-// Assets to cache on initial install
-const INITIAL_CACHE = [
-  './',
-  './index.html',
-  './manifest.json'
+const SW_PATH = self.location.pathname;
+const BASE_PATH = SW_PATH.substring(0, SW_PATH.lastIndexOf('/') + 1); // e.g. '/ADC/' or '/'
+const OFFLINE_URL = BASE_PATH + 'offline.html';
+const CACHE_NAME = 'anujay-dental-v4-offline';
+
+// Minimum assets required to render offline fallback and application shell
+const CORE_PRECACHE = [
+  BASE_PATH,
+  BASE_PATH + 'index.html',
+  OFFLINE_URL,
+  BASE_PATH + 'manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
-  // Activate immediately without waiting for existing clients to close
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(INITIAL_CACHE).catch((err) => {
-        console.warn('Initial cache note:', err);
+      return cache.addAll(CORE_PRECACHE).catch((err) => {
+        console.warn('Initial offline cache warning:', err);
       });
     })
   );
 });
 
 self.addEventListener('activate', (event) => {
-  // Purge any older cache versions immediately
+  // Purge older cache versions immediately
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
@@ -38,46 +43,79 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // CRITICAL 1: ONLY intercept HTTP GET requests
-  // Do NOT intercept POST, PUT, DELETE (e.g. Firebase Auth, Firestore) to prevent browser Cache API crashes
+  // RULE 1: ONLY intercept HTTP GET requests
   if (event.request.method !== 'GET') {
     return;
   }
 
-  // CRITICAL 2: Do NOT intercept external APIs, Firestore, Firebase, Google Fonts, or backend calls
   const url = new URL(event.request.url);
+
+  // RULE 2: NEVER intercept Firebase Auth, Firestore, Google Cloud, APIs, or sensitive requests
   const isSameOrigin = url.origin === self.location.origin;
-  if (!isSameOrigin) {
+  const isExcluded = 
+    url.hostname.includes('firestore.googleapis.com') ||
+    url.hostname.includes('identitytoolkit.googleapis.com') ||
+    url.hostname.includes('firebaseio.com') ||
+    url.hostname.includes('apis.google.com') ||
+    url.hostname.includes('google-analytics.com') ||
+    url.pathname.includes('/api/auth') ||
+    url.pathname.includes('/api/security') ||
+    url.pathname.includes('/api/backup') ||
+    url.pathname.includes('/api/patient-vault');
+
+  if (!isSameOrigin || isExcluded) {
     return;
   }
 
-  // CRITICAL 3: Navigation requests (page loads / HTML)
-  // Always fetch fresh from network to receive the latest JS/CSS asset hashes.
-  // Only fall back to cached index.html if the device is truly offline.
+  // RULE 3: Navigation requests (HTML page loads, route refreshes, direct address bar navigations)
+  // Network-first: Always try live network first to ensure fresh data and avoid stale states.
+  // When network fails (offline), serve the self-contained OFFLINE_URL.
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request, { cache: 'no-cache' })
         .then((response) => {
-          // If valid response, update cache
           if (response && response.status === 200) {
-            const responseClone = response.clone();
+            const clone = response.clone();
             caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseClone);
+              cache.put(event.request, clone);
             });
           }
           return response;
         })
-        .catch(() => {
-          // Offline fallback
-          return caches.match('./index.html')
-            .then((cachedIndex) => cachedIndex || caches.match('./'));
+        .catch(async () => {
+          // Device is offline: Serve the exact offline page
+          const cache = await caches.open(CACHE_NAME);
+          const cachedOffline = await cache.match(OFFLINE_URL);
+          if (cachedOffline) {
+            return cachedOffline;
+          }
+          // Fallback to cached index.html (which renders OfflineScreen via React)
+          const cachedIndex = await cache.match(BASE_PATH + 'index.html') || await cache.match(BASE_PATH);
+          if (cachedIndex) {
+            return cachedIndex;
+          }
+          return new Response(
+            '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Offline | Anujay Dental Clinic</title></head><body><h1>Offline</h1><p>Please check your internet connection.</p></body></html>',
+            { headers: { 'Content-Type': 'text/html' } }
+          );
         })
     );
     return;
   }
 
-  // CRITICAL 4: Static assets (JS, CSS, images, SVGs, fonts)
-  // Stale-while-revalidate or Network-first with cache fallback
+  // RULE 4: Static assets (JS, CSS, SVGs, images)
+  // Stale-while-revalidate / Network-first
+  // Never cache sensitive patient data or private clinical reports
+  const isSensitive = 
+    url.pathname.includes('prescription') || 
+    url.pathname.includes('invoice') || 
+    url.pathname.includes('patient') ||
+    url.search.includes('token');
+
+  if (isSensitive) {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       const fetchPromise = fetch(event.request)
@@ -91,7 +129,6 @@ self.addEventListener('fetch', (event) => {
           return networkResponse;
         })
         .catch((error) => {
-          // If offline and have cache, return cache; otherwise propagate error (never return fake empty 408)
           if (cachedResponse) {
             return cachedResponse;
           }
@@ -103,7 +140,7 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Allow clients to trigger skipWaiting
+// SkipWaiting message listener
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
