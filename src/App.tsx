@@ -11,6 +11,7 @@ import { ReviewsSection } from './components/public/ReviewsSection';
 import { AboutAndFaqSection } from './components/public/AboutAndFaqSection';
 import { DoctorAboutSection } from './components/public/DoctorAboutSection';
 import { BookingSection } from './components/public/BookingSection';
+import { LegalInformationSection } from './components/public/LegalInformationSection';
 import { Footer } from './components/public/Footer';
 import { LoginModal } from './components/auth/LoginModal';
 import { PatientLoginModal } from './components/portal/PatientLoginModal';
@@ -305,6 +306,9 @@ const MainApp: React.FC = () => {
           <BookingSection 
             preSelectedService={preSelectedService}
           />
+
+          {/* Highlighted Medical & Privacy Disclaimer Section */}
+          <LegalInformationSection className="py-12 bg-slate-50/70 border-t border-slate-200/80" />
 
           <Footer 
             onOpenLogin={(tab) => handleOpenLogin(tab || 'staff')}

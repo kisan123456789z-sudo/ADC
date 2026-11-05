@@ -35,6 +35,7 @@ import {
   Megaphone
 } from 'lucide-react';
 import { PatientNoticeBoard } from './notices/PatientNoticeBoard';
+import { LegalInformationSection } from '../public/LegalInformationSection';
 import { useClinic } from '../../context/ClinicContext';
 import { 
   Patient, 
@@ -1164,6 +1165,9 @@ export const PatientDashboard: React.FC<PatientDashboardProps> = ({
         {activeTab === 'updates' && (
           <PatientNoticeBoard />
         )}
+
+        {/* Visually highlighted Medical & Privacy Disclaimer */}
+        <LegalInformationSection isCompact={true} className="mt-10" />
       </main>
 
       {/* ================= MODAL: DOCUMENT PREVIEW ================= */}

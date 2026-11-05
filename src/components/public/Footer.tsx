@@ -31,6 +31,20 @@ export const Footer: React.FC<FooterProps> = ({
     `Hello ${settings?.clinicName || 'Anujay Dental Clinic'}, I would like to inquire about dental services.`
   )}`;
 
+  const handleScrollToDisclaimer = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const el = document.getElementById('legal');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+      el.classList.add('ring-2', 'ring-blue-500', 'ring-offset-2', 'rounded-3xl');
+      setTimeout(() => {
+        el.classList.remove('ring-2', 'ring-blue-500', 'ring-offset-2', 'rounded-3xl');
+      }, 2000);
+    } else {
+      window.location.hash = 'legal';
+    }
+  };
+
   return (
     <footer className="bg-slate-900 text-slate-300 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
@@ -85,6 +99,16 @@ export const Footer: React.FC<FooterProps> = ({
               <li><a href="#about" className="hover:text-sky-400 transition">About Dr. Anujay Sharma</a></li>
               <li><a href="#faq" className="hover:text-sky-400 transition">Frequently Asked Questions</a></li>
               <li><a href="#highlights" className="hover:text-sky-400 transition">Free Sunday Checkup Camp</a></li>
+              <li>
+                <a 
+                  href="#legal" 
+                  onClick={handleScrollToDisclaimer}
+                  className="hover:text-sky-400 transition flex items-center gap-1.5 text-sky-400/90 font-medium"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                  <span>Medical & Privacy Disclaimer</span>
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -139,11 +163,20 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Bottom copyright */}
         <div className="pt-10 mt-10 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
           <p>© {new Date().getFullYear()} {settings.clinicName}. All rights reserved. Hospital-grade Class-B Sterilization.</p>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+            <a 
+              href="#legal" 
+              onClick={handleScrollToDisclaimer}
+              className="text-slate-400 hover:text-sky-300 transition flex items-center gap-1 underline underline-offset-2 cursor-pointer"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
+              <span>Medical & Privacy Disclaimer</span>
+            </a>
+            <span className="text-slate-700 hidden sm:inline">•</span>
             <span className="text-slate-400">Mode: Pay at Clinic - Cash</span>
             <button 
               onClick={() => onOpenLogin('admin')}
-              className="text-slate-400 hover:text-purple-300 transition"
+              className="text-slate-400 hover:text-purple-300 transition cursor-pointer"
             >
               Admin Access
             </button>
