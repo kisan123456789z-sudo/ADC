@@ -31,6 +31,7 @@ import {
   Folder
 } from 'lucide-react';
 import { StaffNoticeComposer } from './notices/StaffNoticeComposer';
+import { SaveButton } from '../common/SaveButton';
 import { useClinic } from '../../context/ClinicContext';
 import { useAuth } from '../../context/AuthContext';
 import { Booking, InventoryItem, Patient, Prescription, AboutContent, FaqItem, HighlightItem } from '../../types/clinic';
@@ -165,11 +166,15 @@ export const StaffDashboard: React.FC = () => {
 
   // Save Content to Firestore
   const handleSaveContent = async () => {
-    await updateAbout(editAbout);
-    await updateFaqs(editFaqs);
-    await updateHighlights(editHighlights);
-    setContentSaveNotice(true);
-    setTimeout(() => setContentSaveNotice(false), 4000);
+    const ok1 = await updateAbout(editAbout);
+    const ok2 = await updateFaqs(editFaqs);
+    const ok3 = await updateHighlights(editHighlights);
+    if (ok1 && ok2 && ok3) {
+      setContentSaveNotice(true);
+      setTimeout(() => setContentSaveNotice(false), 4000);
+      return true;
+    }
+    return false;
   };
 
   return (
@@ -899,14 +904,11 @@ export const StaffDashboard: React.FC = () => {
                       ✓ Content Published to Homepage!
                     </span>
                   )}
-                  <button
-                    type="button"
-                    onClick={handleSaveContent}
+                  <SaveButton
+                    onSave={handleSaveContent}
+                    defaultText="Save All Changes"
                     className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5 transition"
-                  >
-                    <Save className="w-4 h-4" />
-                    <span>Save All Changes</span>
-                  </button>
+                  />
                 </div>
               </div>
 
@@ -1192,14 +1194,11 @@ export const StaffDashboard: React.FC = () => {
 
               {/* Save Button */}
               <div className="pt-4 flex justify-end">
-                <button
-                  type="button"
-                  onClick={handleSaveContent}
+                <SaveButton
+                  onSave={handleSaveContent}
+                  defaultText="Publish Content to Public Website"
                   className="px-7 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-2"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>Publish Content to Public Website</span>
-                </button>
+                />
               </div>
 
             </div>

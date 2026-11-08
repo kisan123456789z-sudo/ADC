@@ -20,6 +20,7 @@ import { useClinic } from '../../context/ClinicContext';
 import { InventoryItem } from '../../types/clinic';
 import { exportInventoryToExcel } from '../../utils/excelGenerator';
 import { ConfirmModal } from './ConfirmModal';
+import { SaveButton } from './SaveButton';
 
 interface InventoryManagerProps {
   themeColor: 'blue' | 'purple' | 'emerald';
@@ -653,12 +654,25 @@ export const InventoryManager: React.FC<InventoryManagerProps> = ({
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className={`px-6 py-2.5 ${primaryBg} text-white text-xs font-bold rounded-xl shadow-md transition cursor-pointer`}
-                >
-                  Save Quantity
-                </button>
+                <SaveButton
+                  type="button"
+                  defaultText="Save Quantity"
+                  savingText="Saving..."
+                  successText="Saved Successfully"
+                  errorText="Save Failed. Please Try Again"
+                  className="px-6 py-2.5 text-xs font-bold"
+                  onSave={async () => {
+                    if (!qtyModalItem || !qtyModalItem.id) return false;
+                    const ok = await updateInventoryQuantity(qtyModalItem.id, Math.max(0, modalQtyValue));
+                    if (ok) {
+                      setInlineQtyValues(prev => ({ ...prev, [qtyModalItem.id!]: modalQtyValue }));
+                      showNotice(`Stock for "${qtyModalItem.name}" updated to ${modalQtyValue} ${qtyModalItem.unit}`);
+                      setTimeout(() => setQtyModalItem(null), 1200);
+                      return true;
+                    }
+                    return false;
+                  }}
+                />
               </div>
             </form>
           </div>
@@ -799,12 +813,33 @@ export const InventoryManager: React.FC<InventoryManagerProps> = ({
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className={`px-6 py-2.5 ${primaryBg} text-white font-bold rounded-xl shadow-md transition cursor-pointer`}
-                >
-                  Save Medicine Details
-                </button>
+                <SaveButton
+                  type="button"
+                  defaultText="Save Medicine Details"
+                  savingText="Saving..."
+                  successText="Saved Successfully"
+                  errorText="Save Failed. Please Try Again"
+                  className="px-6 py-2.5 font-bold"
+                  onSave={async () => {
+                    if (!editModalItem || !editModalItem.id || !editName.trim()) return false;
+                    const finalCategory = editCategory === 'Other' && editCustomCategory.trim() 
+                      ? editCustomCategory.trim() 
+                      : editCategory;
+                    const ok = await updateInventoryItem(editModalItem.id, {
+                      name: editName.trim(),
+                      category: finalCategory,
+                      quantity: Math.max(0, Number(editQty)),
+                      unit: editUnit.trim() || 'strips',
+                      minThreshold: Math.max(1, Number(editMinThreshold))
+                    });
+                    if (ok) {
+                      showNotice(`Updated details for "${editName}" (${editQty} ${editUnit})`);
+                      setTimeout(() => setEditModalItem(null), 1200);
+                      return true;
+                    }
+                    return false;
+                  }}
+                />
               </div>
             </form>
           </div>
@@ -946,12 +981,39 @@ export const InventoryManager: React.FC<InventoryManagerProps> = ({
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className={`px-6 py-2.5 ${primaryBg} text-white font-bold rounded-xl shadow-md transition cursor-pointer`}
-                >
-                  Save New Medicine
-                </button>
+                <SaveButton
+                  type="button"
+                  defaultText="Save New Medicine"
+                  savingText="Saving..."
+                  successText="Saved Successfully"
+                  errorText="Save Failed. Please Try Again"
+                  className="px-6 py-2.5 font-bold"
+                  onSave={async () => {
+                    if (!newName.trim()) return false;
+                    const finalCategory = newCategory === 'Other' && newCustomCategory.trim() 
+                      ? newCustomCategory.trim() 
+                      : newCategory;
+                    const ok = await addInventoryItem({
+                      name: newName.trim(),
+                      category: finalCategory,
+                      quantity: Math.max(0, Number(newQty)),
+                      unit: newUnit.trim() || 'strips',
+                      minThreshold: Math.max(1, Number(newMinThreshold))
+                    });
+                    if (ok) {
+                      showNotice(`Added "${newName}" with ${newQty} ${newUnit} to clinic inventory!`);
+                      setTimeout(() => {
+                        setIsAddModalOpen(false);
+                        setNewName('');
+                        setNewCustomCategory('');
+                        setNewQty(20);
+                        setNewUnit('strips');
+                      }, 1200);
+                      return true;
+                    }
+                    return false;
+                  }}
+                />
               </div>
             </form>
           </div>

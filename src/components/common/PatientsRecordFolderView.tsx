@@ -36,6 +36,7 @@ import {
 } from 'lucide-react';
 import { useClinic } from '../../context/ClinicContext';
 import { Patient, Prescription, Booking, PatientDocument, Invoice } from '../../types/clinic';
+import { SaveButton } from './SaveButton';
 import { 
   buildConnectedPatientRecord, 
   exportSinglePatientFolderZip, 
@@ -553,16 +554,15 @@ export const PatientsRecordFolderView: React.FC<PatientsRecordFolderViewProps> =
   };
 
   // Handle Quick Add Patient into Folder
-  const handleCreatePatientFolder = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleCreatePatientFolder = async (): Promise<boolean> => {
     if (!newPatientName.trim()) {
       setAddPatientError('Patient name is required');
-      return;
+      return false;
     }
     const cleanPh = newPatientPhone.trim().replace(/\D/g, '');
     if (cleanPh.length < 10) {
       setAddPatientError('Please enter a valid 10-digit phone number');
-      return;
+      return false;
     }
 
     try {
@@ -578,19 +578,24 @@ export const PatientsRecordFolderView: React.FC<PatientsRecordFolderViewProps> =
 
       if (res.success && res.id) {
         setSelectedPatientId(res.id);
-        setIsAddPatientModalOpen(false);
-        setNewPatientName('');
-        setNewPatientPhone('');
-        setNewPatientAge('');
-        setNewPatientAddress('');
-        setNewPatientNotes('');
         setSyncStatusMsg(`Patient folder "📁 ${newPatientName}" created and connected!`);
         setTimeout(() => setSyncStatusMsg(null), 4000);
+        setTimeout(() => {
+          setIsAddPatientModalOpen(false);
+          setNewPatientName('');
+          setNewPatientPhone('');
+          setNewPatientAge('');
+          setNewPatientAddress('');
+          setNewPatientNotes('');
+        }, 1200);
+        return true;
       } else {
         setAddPatientError('Failed to create patient folder in database.');
+        return false;
       }
     } catch (err: any) {
       setAddPatientError(err?.message || 'Failed to save patient');
+      return false;
     }
   };
 
@@ -1706,12 +1711,15 @@ export const PatientsRecordFolderView: React.FC<PatientsRecordFolderViewProps> =
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 bg-purple-700 hover:bg-purple-600 text-white text-xs font-bold rounded-xl shadow-md transition"
-                >
-                  Create Folder
-                </button>
+                <SaveButton
+                  type="button"
+                  defaultText="Create Folder"
+                  savingText="Creating..."
+                  successText="Folder Created!"
+                  errorText="Creation Failed"
+                  className="px-5 py-2 font-bold text-xs shadow-md"
+                  onSave={handleCreatePatientFolder}
+                />
               </div>
             </form>
           </div>

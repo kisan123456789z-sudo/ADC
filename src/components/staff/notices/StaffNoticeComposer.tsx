@@ -35,6 +35,7 @@ import { useAuth } from '../../../context/AuthContext';
 import { compressImageFile } from '../../../utils/fileStorageHelper';
 import { NoticeDetailModal } from '../../common/NoticeDetailModal';
 import { getVideoThumbnailUrl } from '../../common/VideoModal';
+import { SaveButton } from '../../common/SaveButton';
 
 export const StaffNoticeComposer: React.FC = () => {
   const { staffUser } = useAuth();
@@ -193,18 +194,18 @@ export const StaffNoticeComposer: React.FC = () => {
   };
 
   // Handle Staff Save (Draft or Submit for Approval)
-  const handleStaffSave = async (submitForApproval: boolean) => {
+  const handleStaffSave = async (submitForApproval: boolean): Promise<boolean> => {
     if (!formTitle.trim()) {
       showToast("Please provide a title for the notice.");
-      return;
+      return false;
     }
     if (formCategory === 'custom' && !formCustomCategory.trim()) {
       showToast("Please specify the custom category name.");
-      return;
+      return false;
     }
     if (!formContent.trim()) {
       showToast("Please write notice content.");
-      return;
+      return false;
     }
 
     setIsSubmitting(true);
@@ -259,16 +260,20 @@ export const StaffNoticeComposer: React.FC = () => {
 
       await loadNotices();
       setIsSubmitting(false);
-      resetForm();
       showToast(
         submitForApproval 
           ? "🎉 Notice submitted to Admin Approval Queue!" 
           : "✓ Draft saved in your submissions."
       );
-      setActiveSubView('my_submissions');
+      setTimeout(() => {
+        resetForm();
+        setActiveSubView('my_submissions');
+      }, 1200);
+      return true;
     } catch (err: any) {
       setIsSubmitting(false);
       showToast("Failed to submit notice: " + (err.message || 'Error'));
+      return false;
     }
   };
 
@@ -685,22 +690,25 @@ export const StaffNoticeComposer: React.FC = () => {
 
             {/* Action Buttons */}
             <div className="flex flex-wrap items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
-              <button
+              <SaveButton
                 type="button"
-                onClick={() => handleStaffSave(false)}
-                disabled={isSubmitting}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition cursor-pointer"
-              >
-                Save as Draft
-              </button>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="px-6 py-2.5 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-xl shadow-md transition cursor-pointer flex items-center gap-2 active:scale-95"
-              >
-                <Send className="w-4 h-4" />
-                <span>Submit for Admin Approval</span>
-              </button>
+                variant="secondary"
+                defaultText="Save as Draft"
+                savingText="Saving Draft..."
+                successText="Draft Saved!"
+                errorText="Save Failed"
+                className="px-4 py-2 font-bold"
+                onSave={() => handleStaffSave(false)}
+              />
+              <SaveButton
+                type="button"
+                defaultText="Submit for Admin Approval"
+                savingText="Submitting..."
+                successText="Submitted Successfully"
+                errorText="Submission Failed"
+                className="px-6 py-2.5 font-bold shadow-md"
+                onSave={() => handleStaffSave(true)}
+              />
             </div>
           </form>
         </div>

@@ -50,6 +50,7 @@ import {
 import { compressImageFile } from '../../../utils/fileStorageHelper';
 import { NoticeDetailModal } from '../../common/NoticeDetailModal';
 import { formatVideoEmbedUrl, getVideoThumbnailUrl } from '../../common/VideoModal';
+import { SaveButton } from '../../common/SaveButton';
 
 export const AdminNoticeManager: React.FC = () => {
   const [notices, setNotices] = useState<ClinicNotice[]>([]);
@@ -273,18 +274,18 @@ export const AdminNoticeManager: React.FC = () => {
   };
 
   // Submit Notice (Admin Action)
-  const handleSaveNotice = async (targetStatus: NoticeStatus) => {
+  const handleSaveNotice = async (targetStatus: NoticeStatus): Promise<boolean> => {
     if (!formTitle.trim()) {
       showToast("Please provide a notice title.");
-      return;
+      return false;
     }
     if (formCategory === 'custom' && !formCustomCategory.trim()) {
       showToast("Please specify the custom category name.");
-      return;
+      return false;
     }
     if (!formContent.trim()) {
       showToast("Please provide notice content body.");
-      return;
+      return false;
     }
 
     setIsSubmitting(true);
@@ -331,12 +332,16 @@ export const AdminNoticeManager: React.FC = () => {
 
       await loadNotices();
       setIsSubmitting(false);
-      resetForm();
       showToast(`✓ Notice successfully ${targetStatus === 'published' ? 'published to Patient Board' : 'saved'}!`);
-      setActiveTab('library');
+      setTimeout(() => {
+        resetForm();
+        setActiveTab('library');
+      }, 1200);
+      return true;
     } catch (err: any) {
       setIsSubmitting(false);
       showToast("Failed to save notice: " + (err.message || 'Error'));
+      return false;
     }
   };
 
@@ -1192,22 +1197,25 @@ export const AdminNoticeManager: React.FC = () => {
 
               {/* Form Buttons */}
               <div className="flex flex-wrap items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
-                <button
+                <SaveButton
                   type="button"
-                  onClick={() => handleSaveNotice('draft')}
-                  disabled={isSubmitting}
-                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition cursor-pointer"
-                >
-                  Save as Draft
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-6 py-2.5 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-xl shadow-md transition cursor-pointer flex items-center gap-2 active:scale-95"
-                >
-                  <Check className="w-4 h-4" />
-                  <span>{editingNoticeId ? 'Update & Publish' : 'Publish Directly to Board'}</span>
-                </button>
+                  variant="secondary"
+                  defaultText="Save as Draft"
+                  savingText="Saving Draft..."
+                  successText="Draft Saved!"
+                  errorText="Save Failed"
+                  className="px-4 py-2.5 font-bold"
+                  onSave={() => handleSaveNotice('draft')}
+                />
+                <SaveButton
+                  type="button"
+                  defaultText={editingNoticeId ? 'Update & Publish' : 'Publish Directly to Board'}
+                  savingText="Publishing..."
+                  successText="Published Successfully"
+                  errorText="Publish Failed"
+                  className="px-6 py-2.5 bg-purple-700 hover:bg-purple-800 text-white font-bold shadow-md"
+                  onSave={() => handleSaveNotice('published')}
+                />
               </div>
             </form>
           </div>

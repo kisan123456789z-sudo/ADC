@@ -135,49 +135,7 @@
         </button>
       </div>
     </div>
-    <style>
-      @keyframes splashPulse {
-        0%, 100% { transform: scale(1); opacity: 0.25; }
-        50% { transform: scale(1.08); opacity: 0.35; }
-      }
-      @keyframes splashPing {
-        0% { transform: scale(0.9); opacity: 0.4; }
-        75%, 100% { transform: scale(1.35); opacity: 0; }
-      }
-      @keyframes logoEntrance {
-        0% { opacity: 0; transform: scale(0.75) translateY(12px); }
-        60% { transform: scale(1.04) translateY(-2px); }
-        100% { opacity: 1; transform: scale(1) translateY(0); }
-      }
-      @keyframes fadeInUp {
-        0% { opacity: 0; transform: translateY(10px); }
-        100% { opacity: 1; transform: translateY(0); }
-      }
-      @keyframes shimmerSweep {
-        0% { transform: translateX(-150%) skewX(-20deg); }
-        50%, 100% { transform: translateX(200%) skewX(-20deg); }
-      }
-      @keyframes fillShimmer {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(200%); }
-      }
-      @keyframes spinSlow {
-        0% { transform: rotate(0deg) scale(0.9); opacity: 0.7; }
-        50% { transform: rotate(180deg) scale(1.15); opacity: 1; }
-        100% { transform: rotate(360deg) scale(0.9); opacity: 0.7; }
-      }
-      @keyframes bounceDot {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-4px); }
-      }
-      @keyframes preloaderLineFill {
-        0% { width: 8%; }
-        25% { width: 42%; }
-        55% { width: 72%; }
-        80% { width: 88%; }
-        100% { width: 96%; }
-      }
-    </style>
+    <style>@keyframes splashPulse{0%,to{opacity:.25;transform:scale(1)}50%{opacity:.35;transform:scale(1.08)}}@keyframes splashPing{0%{opacity:.4;transform:scale(.9)}75%,to{opacity:0;transform:scale(1.35)}}@keyframes logoEntrance{0%{opacity:0;transform:scale(.75)translateY(12px)}60%{transform:scale(1.04)translateY(-2px)}to{opacity:1;transform:scale(1)translateY(0)}}@keyframes fadeInUp{0%{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes shimmerSweep{0%{transform:translate(-150%)skew(-20deg)}50%,to{transform:translate(200%)skew(-20deg)}}@keyframes fillShimmer{0%{transform:translate(-100%)}to{transform:translate(200%)}}@keyframes spinSlow{0%{opacity:.7;transform:rotate(0)scale(.9)}50%{opacity:1;transform:rotate(180deg)scale(1.15)}to{opacity:.7;transform:rotate(360deg)scale(.9)}}@keyframes bounceDot{0%,to{transform:translateY(0)}50%{transform:translateY(-4px)}}@keyframes preloaderLineFill{0%{width:8%}25%{width:42%}55%{width:72%}80%{width:88%}to{width:96%}}</style>
     <script>
       (function() {
         var startTime = Date.now();

@@ -37,6 +37,7 @@ import {
   Folder
 } from 'lucide-react';
 import { useClinic } from '../../context/ClinicContext';
+import { SaveButton } from '../common/SaveButton';
 import { 
   buildConnectedPatientRecord, 
   exportSinglePatientFolderZip 
@@ -327,19 +328,18 @@ export const PatientBillingManager: React.FC<PatientBillingManagerProps> = ({
   };
 
   // Submit Upload Document
-  const handleSaveDocument = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSaveDocument = async (): Promise<boolean> => {
     if (!currentPatient || !currentPatient.id) {
       setUploadError('Please select a valid patient first.');
-      return;
+      return false;
     }
     if (!uploadTitle.trim()) {
       setUploadError('Document title is required.');
-      return;
+      return false;
     }
     if (!uploadFile) {
       setUploadError('Please select a document file to upload.');
-      return;
+      return false;
     }
 
     setIsUploading(true);
@@ -363,18 +363,23 @@ export const PatientBillingManager: React.FC<PatientBillingManagerProps> = ({
       });
 
       setIsUploading(false);
-      if (res.success) {
-        setIsUploadModalOpen(false);
-        setUploadTitle('');
-        setUploadDesc('');
-        setUploadFile(null);
+      if (res && res.success) {
         showToast(`Document "${uploadTitle}" uploaded successfully!`);
+        setTimeout(() => {
+          setIsUploadModalOpen(false);
+          setUploadTitle('');
+          setUploadDesc('');
+          setUploadFile(null);
+        }, 1200);
+        return true;
       } else {
-        setUploadError(res.error ? `Failed to upload: ${res.error}` : 'Failed to upload document. Please try again.');
+        setUploadError(res?.error ? `Failed to upload: ${res.error}` : 'Failed to upload document. Please try again.');
+        return false;
       }
     } catch (err: any) {
       setIsUploading(false);
       setUploadError(`Failed to upload: ${err?.message || 'Please try again.'}`);
+      return false;
     }
   };
 
@@ -426,24 +431,23 @@ export const PatientBillingManager: React.FC<PatientBillingManagerProps> = ({
   };
 
   // Submit Add Invoice
-  const handleSaveInvoice = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSaveInvoice = async (): Promise<boolean> => {
     setInvError('');
     if (!currentPatient || !currentPatient.id) {
       setInvError('Please select a patient first.');
-      return;
+      return false;
     }
     if (!invTreatment.trim()) {
       setInvError('Treatment / Service description is required.');
-      return;
+      return false;
     }
     if (invTotalCharges <= 0) {
       setInvError('Total charges must be greater than ₹ 0.');
-      return;
+      return false;
     }
     if (invDiscount < 0 || invDiscount > invTotalCharges) {
       setInvError('Discount cannot be negative or exceed total charges.');
-      return;
+      return false;
     }
 
     const res = await addInvoice({
@@ -459,15 +463,19 @@ export const PatientBillingManager: React.FC<PatientBillingManagerProps> = ({
       createdBy: currentUserName
     });
 
-    if (res.success) {
-      setIsAddInvoiceModalOpen(false);
-      setInvTreatment('');
-      setInvTotalCharges(0);
-      setInvDiscount(0);
-      setInvNotes('');
+    if (res && res.success) {
       showToast(`Invoice #${res.invoiceNumber} generated!`);
+      setTimeout(() => {
+        setIsAddInvoiceModalOpen(false);
+        setInvTreatment('');
+        setInvTotalCharges(0);
+        setInvDiscount(0);
+        setInvNotes('');
+      }, 1200);
+      return true;
     } else {
       setInvError('Failed to generate invoice.');
+      return false;
     }
   };
 
@@ -501,17 +509,16 @@ export const PatientBillingManager: React.FC<PatientBillingManagerProps> = ({
   };
 
   // Submit Record Payment
-  const handleSavePayment = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSavePayment = async (): Promise<boolean> => {
     setPayError('');
-    if (!selectedInvoiceForPayment || !selectedInvoiceForPayment.id || !currentPatient) return;
+    if (!selectedInvoiceForPayment || !selectedInvoiceForPayment.id || !currentPatient) return false;
     if (payAmount <= 0) {
       setPayError('Payment amount must be greater than ₹ 0.');
-      return;
+      return false;
     }
     if (payAmount > selectedInvoiceForPayment.outstandingBalance) {
       setPayError(`Payment cannot exceed pending balance of ₹ ${selectedInvoiceForPayment.outstandingBalance}.`);
-      return;
+      return false;
     }
 
     const res = await addPayment({
@@ -528,15 +535,19 @@ export const PatientBillingManager: React.FC<PatientBillingManagerProps> = ({
       notes: payNotes.trim()
     });
 
-    if (res.success) {
-      setIsRecordPaymentModalOpen(false);
-      setPayAmount(0);
-      setPayRef('');
-      setPayNotes('');
-      setSelectedInvoiceForPayment(null);
+    if (res && res.success) {
       showToast(`Payment of ₹ ${payAmount} recorded for Invoice #${selectedInvoiceForPayment.invoiceNumber}!`);
+      setTimeout(() => {
+        setIsRecordPaymentModalOpen(false);
+        setPayAmount(0);
+        setPayRef('');
+        setPayNotes('');
+        setSelectedInvoiceForPayment(null);
+      }, 1200);
+      return true;
     } else {
       setPayError('Failed to record payment.');
+      return false;
     }
   };
 
@@ -1587,14 +1598,15 @@ export const PatientBillingManager: React.FC<PatientBillingManagerProps> = ({
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  disabled={isUploading}
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-xs transition flex items-center gap-1.5"
-                >
-                  {isUploading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-                  <span>{isUploading ? 'Uploading...' : 'Save & Link to Patient'}</span>
-                </button>
+                <SaveButton
+                  type="button"
+                  defaultText="Save & Link to Patient"
+                  savingText="Uploading..."
+                  successText="Saved Successfully"
+                  errorText="Save Failed. Please Try Again"
+                  className="px-5 py-2 font-bold rounded-xl shadow-xs"
+                  onSave={handleSaveDocument}
+                />
               </div>
             </form>
           </div>
@@ -1987,12 +1999,15 @@ export const PatientBillingManager: React.FC<PatientBillingManagerProps> = ({
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-xs"
-                >
-                  Generate Invoice
-                </button>
+                <SaveButton
+                  type="button"
+                  defaultText="Generate Invoice"
+                  savingText="Generating..."
+                  successText="Invoice Created!"
+                  errorText="Generation Failed"
+                  className="px-5 py-2 font-bold rounded-xl shadow-xs"
+                  onSave={handleSaveInvoice}
+                />
               </div>
             </form>
           </div>
@@ -2200,13 +2215,15 @@ export const PatientBillingManager: React.FC<PatientBillingManagerProps> = ({
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-xs flex items-center gap-1.5"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Confirm & Save Receipt</span>
-                </button>
+                <SaveButton
+                  type="button"
+                  defaultText="Confirm & Save Receipt"
+                  savingText="Recording Payment..."
+                  successText="Receipt Saved!"
+                  errorText="Payment Failed"
+                  className="px-5 py-2 font-bold rounded-xl shadow-xs"
+                  onSave={handleSavePayment}
+                />
               </div>
             </form>
           </div>

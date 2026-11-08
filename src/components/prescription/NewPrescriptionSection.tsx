@@ -26,6 +26,7 @@ import {
 import { useClinic } from '../../context/ClinicContext';
 import { useAuth } from '../../context/AuthContext';
 import { Prescription, Patient } from '../../types/clinic';
+import { SaveButton } from '../common/SaveButton';
 import { 
   PRESCRIPTION_COORDINATES, 
   getActivePrescriptionTemplate, 
@@ -276,8 +277,10 @@ export const NewPrescriptionSection: React.FC = () => {
       approvedAt: shouldPublish ? new Date().toISOString() : undefined
     };
 
+    let ok = false;
     if (editingPrescriptionId) {
       const success = await updatePrescription(editingPrescriptionId, payload);
+      ok = Boolean(success);
       if (success) {
         setSaveSuccessMsg(
           shouldPublish 
@@ -288,6 +291,7 @@ export const NewPrescriptionSection: React.FC = () => {
       }
     } else {
       const res = await addPrescription(payload);
+      ok = Boolean(res && res.success);
       if (res.success) {
         setSaveSuccessMsg(
           shouldPublish 
@@ -298,9 +302,10 @@ export const NewPrescriptionSection: React.FC = () => {
       }
     }
 
-    if (downloadPdfAfter) {
+    if (downloadPdfAfter && ok) {
       handleDownloadPdf();
     }
+    return ok;
   };
 
   // Download identical single-page PDF (matching the live preview and replaced banner exactly)
@@ -699,14 +704,15 @@ export const NewPrescriptionSection: React.FC = () => {
             {/* Action Buttons */}
             <div className="pt-4 border-t border-slate-100 space-y-3">
               <div className="grid grid-cols-2 gap-3">
-                <button
+                <SaveButton
                   type="button"
-                  onClick={() => handleSave(false)}
-                  className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center justify-center gap-2"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>{editingPrescriptionId ? 'Update Record' : 'Save Prescription'}</span>
-                </button>
+                  onSave={() => handleSave(false)}
+                  defaultText={editingPrescriptionId ? 'Update Record' : 'Save Prescription'}
+                  savingText="Saving..."
+                  successText="Saved Successfully"
+                  errorText="Save Failed. Please Try Again"
+                  className="w-full py-3 text-xs font-bold shadow-sm"
+                />
 
                 <button
                   type="button"

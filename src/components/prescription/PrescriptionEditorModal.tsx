@@ -22,6 +22,7 @@ import { PrescriptionPad } from './PrescriptionPad';
 import { generatePrescriptionPDF } from '../../utils/pdfGenerator';
 import { useClinic } from '../../context/ClinicContext';
 import { useAuth } from '../../context/AuthContext';
+import { SaveButton } from '../common/SaveButton';
 
 interface PrescriptionEditorModalProps {
   initialPrescription?: Partial<Prescription> | null;
@@ -210,22 +211,26 @@ export const PrescriptionEditorModal: React.FC<PrescriptionEditorModalProps> = (
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<boolean> => {
     const pName = (previewData.patientName || patientName).trim();
     if (!pName) {
       setValidationError('Please enter a patient name first.');
-      return;
+      return false;
     }
     setValidationError(null);
-    setIsSaving(true);
     try {
-      await autoSaveToDirectory();
-      onClose();
+      const ok = await autoSaveToDirectory();
+      if (ok) {
+        setTimeout(() => onClose(), 1200);
+        return true;
+      } else {
+        setValidationError('Failed to save prescription. Please try again.');
+        return false;
+      }
     } catch (err) {
       console.error('Error saving prescription:', err);
       setValidationError('Failed to save prescription. Please try again.');
-    } finally {
-      setIsSaving(false);
+      return false;
     }
   };
 
@@ -272,16 +277,15 @@ export const PrescriptionEditorModal: React.FC<PrescriptionEditorModalProps> = (
           </div>
 
           <div className="flex items-center gap-2">
-            <button
+            <SaveButton
               type="button"
-              disabled={isSaving}
-              onClick={handleSubmit}
-              className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5 hover:scale-[1.02]"
-              title="Save Changes to Prescription and Patient Directory"
-            >
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-100" />
-              <span>{isSaving ? 'Saving...' : initialPrescription?.id ? 'Save Changes' : 'Save Prescription'}</span>
-            </button>
+              onSave={handleSubmit}
+              defaultText={initialPrescription?.id ? 'Save Changes' : 'Save Prescription'}
+              savingText="Saving..."
+              successText="Saved Successfully"
+              errorText="Save Failed. Please Try Again"
+              className="px-3.5 py-1.5 font-bold text-xs shadow-md"
+            />
             <button
               onClick={onClose}
               className="p-2 hover:bg-white/20 text-white rounded-xl transition"
@@ -621,15 +625,15 @@ export const PrescriptionEditorModal: React.FC<PrescriptionEditorModalProps> = (
                   <span>Download PDF & Auto-Store</span>
                 </button>
 
-                <button
+                <SaveButton
                   type="button"
-                  disabled={isSaving}
-                  onClick={handleSubmit}
-                  className="w-full py-2 bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center justify-center gap-2"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>{isSaving ? 'Saving...' : initialPrescription?.id ? 'Save Changes & Update Directory' : 'Save Prescription & Store in Directory'}</span>
-                </button>
+                  onSave={handleSubmit}
+                  defaultText={initialPrescription?.id ? 'Save Changes & Update Directory' : 'Save Prescription & Store in Directory'}
+                  savingText="Saving..."
+                  successText="Saved Successfully"
+                  errorText="Save Failed. Please Try Again"
+                  className="w-full py-2 font-bold text-xs shadow-sm"
+                />
               </div>
 
               <div className="p-3 bg-blue-50/70 border border-blue-200 rounded-xl text-[11px] text-blue-900 leading-relaxed">

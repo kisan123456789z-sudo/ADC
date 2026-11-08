@@ -81,6 +81,7 @@ import {
 } from '../../utils/excelGenerator';
 import { InventoryManager } from '../common/InventoryManager';
 import { ConfirmModal } from '../common/ConfirmModal';
+import { SaveButton } from '../common/SaveButton';
 import { PatientBillingManager } from '../billing/PatientBillingManager';
 import { NewPrescriptionSection } from '../prescription/NewPrescriptionSection';
 import { WhatsAppCampaignCenter } from './whatsapp/WhatsAppCampaignCenter';
@@ -254,32 +255,44 @@ export const AdminDashboard: React.FC = () => {
   // Save Settings & Hero & Branding
   const handleSaveSettings = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    await updateSettings(brandingForm);
-    showNotice("Saved & published website changes!");
+    const ok = await updateSettings(brandingForm);
+    if (ok) {
+      showNotice("Saved & published website changes!");
+    }
+    return ok;
   };
 
   // Save About Doctor & Philosophy
   const handleSaveAbout = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    await updateAbout(aboutForm);
-    showNotice("Saved Doctor profile and About section!");
+    const ok = await updateAbout(aboutForm);
+    if (ok) {
+      showNotice("Saved Doctor profile and About section!");
+    }
+    return ok;
   };
 
   // Save FAQs
   const handleSaveFaqs = async () => {
-    await updateFaqs(faqsList);
-    showNotice("Updated FAQ questions on the website!");
+    const ok = await updateFaqs(faqsList);
+    if (ok) {
+      showNotice("Updated FAQ questions on the website!");
+    }
+    return ok;
   };
 
   // Save Highlights & Sunday Camp
   const handleSaveHighlights = async () => {
-    await updateHighlights(highlightsList);
-    await updateSettings({
+    const ok1 = await updateHighlights(highlightsList);
+    const ok2 = await updateSettings({
       freeSundayTimings: brandingForm.freeSundayTimings,
       announcementBanner: brandingForm.announcementBanner,
       isBannerActive: brandingForm.isBannerActive
     });
-    showNotice("Updated Sunday checkup camp & highlights!");
+    if (ok1 && ok2) {
+      showNotice("Updated Sunday checkup camp & highlights!");
+    }
+    return ok1 && ok2;
   };
 
   // File Upload Handlers for Logo & Media
@@ -899,14 +912,11 @@ export const AdminDashboard: React.FC = () => {
                       Edit the main homepage banner, headline, contact numbers, logo graphic, and announcement bar.
                     </p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => handleSaveSettings()}
+                  <SaveButton
+                    onSave={handleSaveSettings}
+                    defaultText="Save Hero & Branding"
                     className="px-6 py-2.5 bg-purple-800 hover:bg-purple-900 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5 transition cursor-pointer"
-                  >
-                    <Save className="w-4 h-4" />
-                    <span>Save Hero & Branding</span>
-                  </button>
+                  />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
@@ -1113,14 +1123,11 @@ export const AdminDashboard: React.FC = () => {
                 </div>
 
                 <div className="flex justify-end pt-4 border-t border-slate-100">
-                  <button
-                    type="button"
-                    onClick={() => handleSaveSettings()}
+                  <SaveButton
+                    onSave={handleSaveSettings}
+                    defaultText="Save Hero & Branding"
                     className="px-8 py-3 bg-purple-800 hover:bg-purple-900 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-2 transition cursor-pointer"
-                  >
-                    <Save className="w-4 h-4" />
-                    <span>Save Hero & Branding</span>
-                  </button>
+                  />
                 </div>
               </div>
             )}
@@ -1140,14 +1147,11 @@ export const AdminDashboard: React.FC = () => {
                       Upload doctor photos, manage clinical portrait gallery, qualifications, registration, and clinic philosophy.
                     </p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => handleSaveAbout()}
+                  <SaveButton
+                    onSave={handleSaveAbout}
+                    defaultText="Save Doctor Profile"
                     className="px-6 py-2.5 bg-purple-800 hover:bg-purple-900 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5 transition cursor-pointer"
-                  >
-                    <Save className="w-4 h-4" />
-                    <span>Save Doctor Profile</span>
-                  </button>
+                  />
                 </div>
 
                 {/* Section Display Visibility Toggle */}
@@ -1640,14 +1644,11 @@ export const AdminDashboard: React.FC = () => {
 
                 {/* Footer Save Button */}
                 <div className="flex justify-end pt-4 border-t border-slate-100">
-                  <button
-                    type="button"
-                    onClick={() => handleSaveAbout()}
+                  <SaveButton
+                    onSave={handleSaveAbout}
+                    defaultText="Publish Doctor & About Updates"
                     className="px-8 py-3 bg-purple-800 hover:bg-purple-900 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-2 transition cursor-pointer"
-                  >
-                    <Save className="w-4 h-4" />
-                    <span>Publish Doctor & About Updates</span>
-                  </button>
+                  />
                 </div>
 
               </div>
@@ -1771,14 +1772,11 @@ export const AdminDashboard: React.FC = () => {
                       Edit the clinic's physical address, landmark, Google Maps links, and step-by-step directions.
                     </p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => handleSaveSettings()}
+                  <SaveButton
+                    onSave={handleSaveSettings}
+                    defaultText="Save Location Details"
                     className="px-6 py-2.5 bg-purple-800 hover:bg-purple-900 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5 transition cursor-pointer"
-                  >
-                    <Save className="w-4 h-4" />
-                    <span>Save Location Details</span>
-                  </button>
+                  />
                 </div>
 
                 <div className="space-y-4 text-xs">
@@ -1825,14 +1823,11 @@ export const AdminDashboard: React.FC = () => {
                 </div>
 
                 <div className="flex justify-end pt-4 border-t border-slate-100">
-                  <button
-                    type="button"
-                    onClick={() => handleSaveSettings()}
+                  <SaveButton
+                    onSave={handleSaveSettings}
+                    defaultText="Publish Location Changes"
                     className="px-8 py-3 bg-purple-800 hover:bg-purple-900 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-2 cursor-pointer"
-                  >
-                    <Save className="w-4 h-4" />
-                    <span>Publish Location Changes</span>
-                  </button>
+                  />
                 </div>
               </div>
             )}
@@ -1904,14 +1899,11 @@ export const AdminDashboard: React.FC = () => {
                       Edit the weekly free checkup camp announcement, timings, and all 4 highlight cards.
                     </p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => handleSaveHighlights()}
+                  <SaveButton
+                    onSave={handleSaveHighlights}
+                    defaultText="Save Highlights"
                     className="px-6 py-2.5 bg-purple-800 hover:bg-purple-900 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <Save className="w-4 h-4" />
-                    <span>Save Highlights</span>
-                  </button>
+                  />
                 </div>
 
                 <div className="text-xs space-y-3">
@@ -1971,14 +1963,11 @@ export const AdminDashboard: React.FC = () => {
                 </div>
 
                 <div className="flex justify-end pt-4 border-t border-slate-100">
-                  <button
-                    type="button"
-                    onClick={() => handleSaveHighlights()}
+                  <SaveButton
+                    onSave={handleSaveHighlights}
+                    defaultText="Publish Highlights to Website"
                     className="px-8 py-3 bg-purple-800 hover:bg-purple-900 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-2 cursor-pointer"
-                  >
-                    <Save className="w-4 h-4" />
-                    <span>Publish Highlights to Website</span>
-                  </button>
+                  />
                 </div>
               </div>
             )}
@@ -2000,13 +1989,11 @@ export const AdminDashboard: React.FC = () => {
                       <Plus className="w-4 h-4" />
                       <span>+ Add FAQ</span>
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => handleSaveFaqs()}
+                    <SaveButton
+                      onSave={handleSaveFaqs}
+                      defaultText="Save FAQs"
                       className="px-6 py-2 bg-purple-800 hover:bg-purple-900 text-white font-bold text-xs rounded-xl shadow-xs"
-                    >
-                      Save FAQs
-                    </button>
+                    />
                   </div>
                 </div>
 
@@ -3068,13 +3055,12 @@ export const AdminDashboard: React.FC = () => {
                     </div>
 
                     <div className="pt-2">
-                      <button
+                      <SaveButton
                         type="submit"
-                        className="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-2xl shadow-md flex items-center justify-center gap-2 text-sm transition cursor-pointer"
-                      >
-                        <CheckCircle2 className="w-4 h-4" />
-                        <span>Save &amp; Record Income Entry</span>
-                      </button>
+                        defaultText="Save & Record Income Entry"
+                        fullWidth
+                        className="py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-2xl shadow-md text-sm"
+                      />
                     </div>
 
                   </form>
@@ -3174,13 +3160,12 @@ export const AdminDashboard: React.FC = () => {
                     </div>
 
                     <div className="pt-2">
-                      <button
+                      <SaveButton
                         type="submit"
-                        className="w-full py-3 bg-rose-700 hover:bg-rose-800 text-white font-bold rounded-2xl shadow-md flex items-center justify-center gap-2 text-sm transition cursor-pointer"
-                      >
-                        <CheckCircle2 className="w-4 h-4" />
-                        <span>Save &amp; Log Clinic Expense</span>
-                      </button>
+                        defaultText="Save & Log Clinic Expense"
+                        fullWidth
+                        className="py-3 bg-rose-700 hover:bg-rose-800 text-white font-bold rounded-2xl shadow-md text-sm"
+                      />
                     </div>
 
                   </form>
@@ -3248,12 +3233,11 @@ export const AdminDashboard: React.FC = () => {
                 onChange={(e) => setNewStaffPhone(e.target.value.replace(/\D/g, ''))}
                 className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono"
               />
-              <button
+              <SaveButton
                 type="submit"
+                defaultText="+ Authorize Staff"
                 className="py-2 px-4 bg-purple-800 hover:bg-purple-900 text-white font-bold rounded-xl"
-              >
-                + Authorize Staff
-              </button>
+              />
             </form>
 
             {/* Pending Staff Approvals Banner */}
@@ -4194,12 +4178,11 @@ export const AdminDashboard: React.FC = () => {
                 >
                   Cancel
                 </button>
-                <button
+                <SaveButton
                   type="submit"
+                  defaultText="Save & Publish Service"
                   className="px-6 py-2.5 bg-purple-800 hover:bg-purple-900 text-white font-bold rounded-xl shadow-md cursor-pointer"
-                >
-                  Save & Publish Service
-                </button>
+                />
               </div>
             </form>
           </div>
@@ -4378,12 +4361,11 @@ export const AdminDashboard: React.FC = () => {
                 >
                   Cancel
                 </button>
-                <button
+                <SaveButton
                   type="submit"
+                  defaultText="Update Service"
                   className="px-6 py-2.5 bg-purple-800 hover:bg-purple-900 text-white font-bold rounded-xl shadow-md cursor-pointer"
-                >
-                  Update Service
-                </button>
+                />
               </div>
             </form>
           </div>
@@ -4507,12 +4489,11 @@ export const AdminDashboard: React.FC = () => {
                 >
                   Cancel
                 </button>
-                <button
+                <SaveButton
                   type="submit"
+                  defaultText="Publish Photo"
                   className="px-6 py-2.5 bg-purple-800 hover:bg-purple-900 text-white font-bold rounded-xl shadow-md cursor-pointer"
-                >
-                  Publish Photo
-                </button>
+                />
               </div>
             </form>
           </div>
